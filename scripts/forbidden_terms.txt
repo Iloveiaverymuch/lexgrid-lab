@@ -1,0 +1,10 @@
+# One term per line, case-insensitive. Checked in README, AGENTS.md, docs/, evals/, skills.
+# Add previous-project brand names, client names and domains here.
+zero hallucination
+hallucination-free
+production-grade
+production ready
+production-ready
+battle-tested
+guaranteed accuracy
+legal advice you can rely on

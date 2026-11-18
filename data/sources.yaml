@@ -1,0 +1,70 @@
+# Source registry: the single source of truth for what we ingest, under which license,
+# and which jurisdiction owns it. Validated by lexgrid.registry.Source (unknown fields fail).
+# License texts to re-verify before any public release of the repo.
+
+- id: eu-gdpr
+  jurisdiction: EU
+  languages: [fr, en, de]
+  act_short: GDPR
+  external_id: "CELEX:32016R0679"
+  title: "Regulation (EU) 2016/679 (General Data Protection Regulation)"
+  publisher: Publications Office of the European Union
+  license: "© European Union, EUR-Lex. Reuse authorised, source acknowledged (Commission Decision 2011/833/EU)"
+  license_url: https://eur-lex.europa.eu/content/legal-notice/legal-notice.html
+  url: "https://eur-lex.europa.eu/legal-content/{lang}/TXT/HTML/?uri=CELEX:32016R0679"
+  format: eurlex_html
+  parser: eurlex_html
+  refresh_cadence: P30D
+  pii_risk: low
+  doc_type: regulation
+  default_valid_from: 2016-05-24
+
+- id: eu-crd
+  jurisdiction: EU
+  languages: [fr, en, de]
+  act_short: CRD
+  external_id: "CELEX:32011L0083"
+  title: "Directive 2011/83/EU on consumer rights"
+  publisher: Publications Office of the European Union
+  license: "© European Union, EUR-Lex. Reuse authorised, source acknowledged (Commission Decision 2011/833/EU)"
+  license_url: https://eur-lex.europa.eu/content/legal-notice/legal-notice.html
+  url: "https://eur-lex.europa.eu/legal-content/{lang}/TXT/HTML/?uri=CELEX:32011L0083"
+  format: eurlex_html
+  parser: eurlex_html
+  refresh_cadence: P30D
+  pii_risk: low
+  doc_type: directive
+  default_valid_from: 2011-12-12
+
+- id: fr-code-conso-l221
+  jurisdiction: FR
+  languages: [fr]
+  act_short: "C. conso"
+  external_id: "LEGITEXT000006069565"
+  title: "Code de la consommation — Contrats conclus à distance et hors établissement (L221-1 s.)"
+  publisher: "DILA / Légifrance"
+  license: "Licence Ouverte / Open Licence 2.0 (DILA open data); page capture, verify before redistribution"
+  license_url: https://www.etalab.gouv.fr/licence-ouverte-open-licence/
+  url: "https://www.legifrance.gouv.fr/codes/texte_lc/LEGITEXT000006069565"
+  format: legifrance_html
+  parser: legifrance_html
+  refresh_cadence: P7D
+  pii_risk: low
+  doc_type: code
+  default_valid_from: 2016-07-01
+
+- id: de-bgb
+  jurisdiction: DE
+  languages: [de]
+  act_short: BGB
+  external_id: "BGB"
+  title: "Bürgerliches Gesetzbuch"
+  publisher: "Bundesministerium der Justiz / juris"
+  license: "Amtliches Werk, not protected by copyright (§ 5 UrhG)"
+  license_url: https://www.gesetze-im-internet.de/hinweise.html
+  url: "https://www.gesetze-im-internet.de/bgb/xml.zip"
+  format: gii_xml
+  parser: gii_xml
+  refresh_cadence: P7D
+  pii_risk: low
+  doc_type: code

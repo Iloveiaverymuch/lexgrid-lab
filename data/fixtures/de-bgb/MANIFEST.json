@@ -1,0 +1,15 @@
+{
+  "source_id": "de-bgb",
+  "files": [
+    {
+      "path": "de.xml",
+      "language": "de",
+      "sha256": "34fc732d8b963eb753ed11236490d3c47c123ccb72b67c2fdda7f19544389e57",
+      "bytes": 2519002,
+      "url": "https://www.gesetze-im-internet.de/bgb/xml.zip",
+      "fetched_at": "2026-11-18T10:39:28.094901Z",
+      "etag": null,
+      "origin_sha256": "a4f41098aad1932df88ba2743de4a650b931a23cf71958bf5fad1c0e3785284a"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Synthetic sample mirroring the gesetze-im-internet.de gii-norm structure (not the real text). -->
+<dokumente builddate="20260101" doknr="BJNR001950896">
+  <norm builddate="20260101" doknr="BJNR001950896BJNE000000000">
+    <metadaten><jurabk>BGB</jurabk><langue>Bürgerliches Gesetzbuch</langue></metadaten>
+  </norm>
+  <norm><metadaten><jurabk>BGB</jurabk>
+    <gliederungseinheit><gliederungskennzahl>020</gliederungskennzahl><gliederungsbez>Buch 2</gliederungsbez><gliederungstitel>Recht der Schuldverhältnisse</gliederungstitel></gliederungseinheit>
+  </metadaten></norm>
+  <norm><metadaten><jurabk>BGB</jurabk>
+    <gliederungseinheit><gliederungskennzahl>020030</gliederungskennzahl><gliederungsbez>Abschnitt 3</gliederungsbez><gliederungstitel>Schuldverhältnisse aus Verträgen</gliederungstitel></gliederungseinheit>
+  </metadaten></norm>
+  <norm><metadaten><jurabk>BGB</jurabk><enbez>§ 312g</enbez><titel>Widerrufsrecht</titel></metadaten>
+    <textdaten><text format="XML"><Content>
+      <P>(1) Dem Verbraucher steht bei außerhalb von Geschäftsräumen geschlossenen Verträgen ein Widerrufsrecht zu.</P>
+      <P>(2) Das Widerrufsrecht besteht, soweit die Parteien nichts anderes vereinbart haben, nicht bei <DL><DT>1.</DT><DD><LA>Verträgen zur Lieferung von Waren,</LA></DD></DL></P>
+    </Content></text></textdaten>
+  </norm>
+  <norm><metadaten><jurabk>BGB</jurabk><enbez>§ 312h</enbez><titel>(weggefallen)</titel></metadaten>
+    <textdaten><text format="XML"><Content><P>-</P></Content></text></textdaten>
+  </norm>
+  <norm><metadaten><jurabk>BGB</jurabk>
+    <gliederungseinheit><gliederungskennzahl>020050</gliederungskennzahl><gliederungsbez>Abschnitt 5</gliederungsbez><gliederungstitel>Rücktritt; Widerrufsrecht</gliederungstitel></gliederungseinheit>
+  </metadaten></norm>
+  <norm><metadaten><jurabk>BGB</jurabk><enbez>§ 355</enbez><titel>Widerrufsrecht bei Verbraucherverträgen</titel></metadaten>
+    <textdaten><text format="XML"><Content>
+      <P>(2) Die Widerrufsfrist beträgt 14 Tage.</P>
+    </Content></text></textdaten>
+  </norm>
+</dokumente>

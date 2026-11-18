@@ -1,0 +1,35 @@
+{
+  "source_id": "eu-crd",
+  "files": [
+    {
+      "path": "de.html",
+      "language": "de",
+      "sha256": "0bf74364767ecf66f452b3e4650f50a9f414a2674dfa9502a7d7838c95bd3ee4",
+      "bytes": 348509,
+      "url": "https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32011L0083",
+      "fetched_at": "2026-11-18T10:37:40Z",
+      "etag": null,
+      "origin_sha256": "9edba9bbc7fe77c5cf256ddf836c1a5b17ce308a9b466d98daad79c0ba8a4e5d"
+    },
+    {
+      "path": "en.html",
+      "language": "en",
+      "sha256": "29c6d8352b6c7a0136d63329fe70ebe09a9a5b9d399f8529122bed82e782768a",
+      "bytes": 328578,
+      "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32011L0083",
+      "fetched_at": "2026-11-18T10:37:17Z",
+      "etag": null,
+      "origin_sha256": "bb4cd2d647484fd89826ed0c7b0628b20c4ad057c65d500335a926dd3e346b16"
+    },
+    {
+      "path": "fr.html",
+      "language": "fr",
+      "sha256": "f612f6796c8f5fdf755f6e2227e5b82ea97a6c3f99c7f7180e3afb8eafbbf101",
+      "bytes": 348074,
+      "url": "https://eur-lex.europa.eu/legal-content/FR/TXT/HTML/?uri=CELEX:32011L0083",
+      "fetched_at": "2026-11-18T10:36:44Z",
+      "etag": null,
+      "origin_sha256": "30cb4ab070e6b3fd1ea9975407e3fc83c9cf49cdde357c4f4f3881da83b93446"
+    }
+  ]
+}

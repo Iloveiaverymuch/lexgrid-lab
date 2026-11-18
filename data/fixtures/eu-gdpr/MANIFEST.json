@@ -1,0 +1,35 @@
+{
+  "source_id": "eu-gdpr",
+  "files": [
+    {
+      "path": "de.html",
+      "language": "de",
+      "sha256": "eaae46af298e545dc0ce1e2073c719ac5911634bbc0687a17bb376f1f6c9abe6",
+      "bytes": 949931,
+      "url": "https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32016R0679",
+      "fetched_at": "2026-11-18T10:36:15Z",
+      "etag": null,
+      "origin_sha256": "b266033cdcede0c20ac58d29890e3aeb080972abf318af465ac05adf0922d5a6"
+    },
+    {
+      "path": "en.html",
+      "language": "en",
+      "sha256": "5fa02160b342dd9e0cfd91eb38063db60693b7c469aa2a0aa5c7f6ecd9539c9a",
+      "bytes": 882584,
+      "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679",
+      "fetched_at": "2026-11-18T10:36:05Z",
+      "etag": null,
+      "origin_sha256": "2aaf26d68e570d8f9727a61d42ed7d811a203f50896079c6699fac7d79aa66b9"
+    },
+    {
+      "path": "fr.html",
+      "language": "fr",
+      "sha256": "629330d89a46b19fac54af09a44204d42e99b32ee63ccd26a5451c15c7e19f31",
+      "bytes": 954647,
+      "url": "https://eur-lex.europa.eu/legal-content/FR/TXT/HTML/?uri=CELEX:32016R0679",
+      "fetched_at": "2026-11-18T10:35:51Z",
+      "etag": null,
+      "origin_sha256": "2c3333eb40c8c66b95ab962aa530c01ae58d36a61e567f50c4b8ff2a73f131ad"
+    }
+  ]
+}
