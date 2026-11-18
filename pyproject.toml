@@ -10,7 +10,14 @@ dependencies = [
     "beautifulsoup4>=4.12",
     "sqlalchemy>=2.0",
     "psycopg[binary]>=3.2",
+    "numpy>=1.26",
+    "opensearch-py>=2.6",
+    "boto3>=1.35",
 ]
+
+[project.optional-dependencies]
+# Local models (torch). Not installed in CI: `uv sync --extra ml` on the Mac.
+ml = ["sentence-transformers>=3.0"]
 
 [project.scripts]
 lexgrid = "lexgrid.cli:main"
@@ -50,5 +57,5 @@ mypy_path = "src"
 sqlite_cache = false
 
 [[tool.mypy.overrides]]
-module = ["lxml", "lxml.*"]
+module = ["lxml", "lxml.*", "opensearchpy", "opensearchpy.*", "boto3", "botocore.*", "sentence_transformers", "torch"]
 ignore_missing_imports = true

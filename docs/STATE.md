@@ -1,23 +1,24 @@
 # STATE
 
-Status: ACTIVE · Last updated: 2026-11-18 · Next action: Day 2 retrieval (needs Docker + AWS on the Mac)
+Status: ACTIVE · Last updated: 2026-11-18 · Next action: commit Day 2; Day 3 = promotion gate + API/MCP + safety tests
 
-**Current:** Day 1 DONE (data plane). Day 2 next. See [LAB_PLAN.md](LAB_PLAN.md).
+**Current:** Day 2 DONE. Best: bge-m3 hybrid+rerank nDCG@10 0.843 [0.76, 0.92] (FINDINGS D2-EVAL-BGEM3-01). See [LAB_PLAN.md](LAB_PLAN.md).
 
 ## Next 3 actions
-1. Embedder interface: fake (offline), local multilingual-e5, Bedrock Titan V2.
-2. Versioned OpenSearch index per jurisdiction + alias swap + rollback; offline BM25 for verify.
-3. Retriever (4 modes) + golden set (30 q, graded qrels) + eval runner with CIs.
+1. Riadh reviews golden labels (q23, q24 first); rerun eval if labels change.
+2. Day 3: promotion gate (refuse regressions) + FastAPI /search /ask /lineage + read-only MCP.
+3. Day 3: leak + poisoned-chunk tests, README with results, demo script.
 
 ## Blockers
 - Agent environments cannot reach Hugging Face or AWS: model downloads and Bedrock calls run on the Mac.
-- Bedrock Rerank blocked by Free-plan SCP (backlog #7): rerank = local cross-encoder only.
+- Bedrock blocked: Rerank by SCP (#7), Titan InvokeModel since 2026-11-18 (#8). Embedding benchmark = e5 vs bge-m3 (local).
 - No Docker in the agent shell: OpenSearch/Postgres integration runs on the Mac only.
 
 ## Last 3 decisions
-- AWS: Free plan, profile `lexgrid` (IAM user `lexgrid-lab`, eu-central-1); Titan V2 embeddings verified; no upgrade for now.
+- ADR-001: open-source models (bge-m3 + bge-reranker-v2-m3) because the Free plan blocks Bedrock and a paid plan is not justified.
+- Golden v1 metrics are on agent-drafted labels until Riadh's review; rerun after any label change.
 - 3-day scope: Go, Kafka, Airflow, Redis, K8S, PDF/email moved to roadmap (LAB_PLAN §Cut).
-- Germany (BGB XML) as 3rd jurisdiction; consumer-contract law as the common topic.
 
 ## Verified numbers
-- Corpus: 3,253 chunks, 8 doc versions, 4 sources; re-run no-op ([FINDINGS](../evals/FINDINGS.md) D1-INGEST-03/04).
+- Corpus: 3,224 live chunks, 4 sources, parser 1.1.0; re-run no-op ([FINDINGS](../evals/FINDINGS.md) D2-INGEST-05).
+- Retrieval (30 q): BM25 0.557 → bge-m3 hybrid+rerank 0.843 nDCG@10 (D2-EVAL-BGEM3-01, D2-CMP-01).

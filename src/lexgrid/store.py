@@ -255,8 +255,9 @@ class LineageStore:
     def live_chunks(self, jurisdiction: str | None = None) -> list[dict[str, Any]]:
         """Chunks of non-superseded versions: what an index build should contain."""
         q = (
-            select(chunks_t)
+            select(chunks_t, documents_t.c.doc_type)
             .join(doc_versions_t, chunks_t.c.doc_version_id == doc_versions_t.c.id)
+            .join(documents_t, doc_versions_t.c.document_id == documents_t.c.id)
             .where(doc_versions_t.c.superseded_by.is_(None))
         )
         if jurisdiction:
@@ -291,6 +292,32 @@ class LineageStore:
         with self.engine.connect() as conn:
             row = conn.execute(q).mappings().first()
         return dict(row) if row else None
+
+    # --- index runs -------------------------------------------------------------------------
+    def add_index_run(self, row: dict[str, Any]) -> None:
+        with self.engine.begin() as conn:
+            conn.execute(index_runs_t.insert().values(**row))
+
+    def set_index_run_status(self, run_id: str, status: str, *, promoted: bool = False) -> None:
+        values: dict[str, Any] = {"status": status}
+        if promoted:
+            values["promoted_at"] = datetime.now(tz=UTC)
+        with self.engine.begin() as conn:
+            conn.execute(update(index_runs_t).where(index_runs_t.c.run_id == run_id).values(**values))
+
+    def index_runs(self, jurisdiction: str) -> list[dict[str, Any]]:
+        q = (
+            select(index_runs_t)
+            .where(index_runs_t.c.jurisdiction == jurisdiction)
+            .order_by(index_runs_t.c.created_at)
+        )
+        with self.engine.connect() as conn:
+            return [dict(r) for r in conn.execute(q).mappings()]
+
+    def add_eval_rows(self, rows: list[dict[str, Any]]) -> None:
+        if rows:
+            with self.engine.begin() as conn:
+                conn.execute(eval_runs_t.insert(), rows)
 
     def counts(self) -> dict[str, int]:
         with self.engine.connect() as conn:

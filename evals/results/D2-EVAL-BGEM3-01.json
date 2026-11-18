@@ -1,0 +1,3187 @@
+{
+  "run_id": "D2-EVAL-BGEM3-01",
+  "created_at": "2026-11-18T16:41:03.266808+00:00",
+  "git_sha": "c490f4a",
+  "host": "macOS-27.0.1-arm64-arm-64bit",
+  "config": {
+    "backend": "opensearch",
+    "embedder": "BAAI/bge-m3",
+    "reranker": "BAAI/bge-reranker-v2-m3",
+    "modes": [
+      "bm25",
+      "dense",
+      "hybrid_rrf",
+      "hybrid_rrf_rerank"
+    ],
+    "candidates": 50,
+    "rerank_top": 30,
+    "golden": "/Users/riadhkarchoud/Documents/Work/AI/AI Formation/lexgrid-lab/evals/golden/golden_v1.yaml"
+  },
+  "summary": {
+    "n_queries": 30,
+    "n_no_answer": 4,
+    "modes": {
+      "bm25": {
+        "metrics": {
+          "hit@1": {
+            "mean": 0.6333333333333333,
+            "ci_low": 0.4666666666666667,
+            "ci_high": 0.8
+          },
+          "hit@5": {
+            "mean": 0.7,
+            "ci_low": 0.5333333333333333,
+            "ci_high": 0.8666666666666667
+          },
+          "mrr@10": {
+            "mean": 0.6653703703703703,
+            "ci_low": 0.495,
+            "ci_high": 0.827037037037037
+          },
+          "ndcg@10": {
+            "mean": 0.5571251311839672,
+            "ci_low": 0.4072550190524635,
+            "ci_high": 0.7128153343264844
+          },
+          "precision@5": {
+            "mean": 0.22000000000000006,
+            "ci_low": 0.16000000000000003,
+            "ci_high": 0.28
+          },
+          "recall@10": {
+            "mean": 0.6188888888888887,
+            "ci_low": 0.46222222222222226,
+            "ci_high": 0.7744444444444444
+          },
+          "recall@5": {
+            "mean": 0.5744444444444443,
+            "ci_low": 0.41777777777777775,
+            "ci_high": 0.7389444444444441
+          }
+        },
+        "by_type": {
+          "cross_lingual": {
+            "n": 6,
+            "ndcg@10": 0.15747465942659766,
+            "hit@5": 0.16666666666666666
+          },
+          "exact_ref": {
+            "n": 6,
+            "ndcg@10": 0.9939900722194421,
+            "hit@5": 1.0
+          },
+          "multi_jurisdiction": {
+            "n": 6,
+            "ndcg@10": 0.3787343674510956,
+            "hit@5": 0.8333333333333334
+          },
+          "paraphrase": {
+            "n": 12,
+            "ndcg@10": 0.6277132784113503,
+            "hit@5": 0.75
+          }
+        },
+        "latency_ms": {
+          "p50": 105.95375008415431,
+          "p95": 369.53081648098293
+        }
+      },
+      "dense": {
+        "metrics": {
+          "hit@1": {
+            "mean": 0.7,
+            "ci_low": 0.5333333333333333,
+            "ci_high": 0.8666666666666667
+          },
+          "hit@5": {
+            "mean": 0.9333333333333333,
+            "ci_low": 0.8333333333333334,
+            "ci_high": 1.0
+          },
+          "mrr@10": {
+            "mean": 0.788611111111111,
+            "ci_low": 0.6677777777777777,
+            "ci_high": 0.9052847222222221
+          },
+          "ndcg@10": {
+            "mean": 0.7585473992189585,
+            "ci_low": 0.6590456215269014,
+            "ci_high": 0.8565047555621055
+          },
+          "precision@5": {
+            "mean": 0.3133333333333333,
+            "ci_low": 0.25333333333333335,
+            "ci_high": 0.37333333333333335
+          },
+          "recall@10": {
+            "mean": 0.8822222222222221,
+            "ci_low": 0.7877777777777778,
+            "ci_high": 0.9600000000000001
+          },
+          "recall@5": {
+            "mean": 0.7644444444444444,
+            "ci_low": 0.65,
+            "ci_high": 0.8733333333333333
+          }
+        },
+        "by_type": {
+          "cross_lingual": {
+            "n": 6,
+            "ndcg@10": 0.7595804839809227,
+            "hit@5": 1.0
+          },
+          "exact_ref": {
+            "n": 6,
+            "ndcg@10": 0.5628451980717633,
+            "hit@5": 0.6666666666666666
+          },
+          "multi_jurisdiction": {
+            "n": 6,
+            "ndcg@10": 0.6512984147011445,
+            "hit@5": 1.0
+          },
+          "paraphrase": {
+            "n": 12,
+            "ndcg@10": 0.9095064496704812,
+            "hit@5": 1.0
+          }
+        },
+        "latency_ms": {
+          "p50": 90.53408412728459,
+          "p95": 662.8808949724756
+        }
+      },
+      "hybrid_rrf": {
+        "metrics": {
+          "hit@1": {
+            "mean": 0.7,
+            "ci_low": 0.5333333333333333,
+            "ci_high": 0.8666666666666667
+          },
+          "hit@5": {
+            "mean": 0.9333333333333333,
+            "ci_low": 0.8333333333333334,
+            "ci_high": 1.0
+          },
+          "mrr@10": {
+            "mean": 0.7823148148148147,
+            "ci_low": 0.6543819444444444,
+            "ci_high": 0.9011111111111111
+          },
+          "ndcg@10": {
+            "mean": 0.7327195856568445,
+            "ci_low": 0.6321554712964705,
+            "ci_high": 0.8373942148192085
+          },
+          "precision@5": {
+            "mean": 0.2933333333333333,
+            "ci_low": 0.2466666666666667,
+            "ci_high": 0.33999999999999997
+          },
+          "recall@10": {
+            "mean": 0.8627777777777776,
+            "ci_low": 0.7805555555555556,
+            "ci_high": 0.9389027777777776
+          },
+          "recall@5": {
+            "mean": 0.7549999999999998,
+            "ci_low": 0.6355416666666666,
+            "ci_high": 0.8633333333333333
+          }
+        },
+        "by_type": {
+          "cross_lingual": {
+            "n": 6,
+            "ndcg@10": 0.5908687577378129,
+            "hit@5": 1.0
+          },
+          "exact_ref": {
+            "n": 6,
+            "ndcg@10": 0.9939900722194421,
+            "hit@5": 1.0
+          },
+          "multi_jurisdiction": {
+            "n": 6,
+            "ndcg@10": 0.5214490976898454,
+            "hit@5": 1.0
+          },
+          "paraphrase": {
+            "n": 12,
+            "ndcg@10": 0.7786450003185608,
+            "hit@5": 0.8333333333333334
+          }
+        },
+        "latency_ms": {
+          "p50": 64.93399979081005,
+          "p95": 169.8164209956301
+        }
+      },
+      "hybrid_rrf_rerank": {
+        "metrics": {
+          "hit@1": {
+            "mean": 0.8666666666666667,
+            "ci_low": 0.7333333333333333,
+            "ci_high": 0.9666666666666667
+          },
+          "hit@5": {
+            "mean": 0.9333333333333333,
+            "ci_low": 0.8333333333333334,
+            "ci_high": 1.0
+          },
+          "mrr@10": {
+            "mean": 0.9047619047619048,
+            "ci_low": 0.807936507936508,
+            "ci_high": 0.9833333333333333
+          },
+          "ndcg@10": {
+            "mean": 0.8428714045578004,
+            "ci_low": 0.7633586322869594,
+            "ci_high": 0.920841248334528
+          },
+          "precision@5": {
+            "mean": 0.31999999999999995,
+            "ci_low": 0.26000000000000006,
+            "ci_high": 0.38666666666666666
+          },
+          "recall@10": {
+            "mean": 0.9155555555555555,
+            "ci_low": 0.8488888888888889,
+            "ci_high": 0.9755555555555555
+          },
+          "recall@5": {
+            "mean": 0.806111111111111,
+            "ci_low": 0.6866666666666666,
+            "ci_high": 0.9138888888888889
+          }
+        },
+        "by_type": {
+          "cross_lingual": {
+            "n": 6,
+            "ndcg@10": 0.7195864630793607,
+            "hit@5": 0.8333333333333334
+          },
+          "exact_ref": {
+            "n": 6,
+            "ndcg@10": 0.9939900722194421,
+            "hit@5": 1.0
+          },
+          "multi_jurisdiction": {
+            "n": 6,
+            "ndcg@10": 0.6956130036612689,
+            "hit@5": 1.0
+          },
+          "paraphrase": {
+            "n": 12,
+            "ndcg@10": 0.9025837419144653,
+            "hit@5": 0.9166666666666666
+          }
+        },
+        "latency_ms": {
+          "p50": 3031.8716255715117,
+          "p95": 4893.109510152133
+        }
+      }
+    },
+    "comparisons": {
+      "dense_vs_bm25": {
+        "ndcg@10_paired_bootstrap": {
+          "diff": 0.20142226803499133,
+          "ci_low": 0.02312411628858778,
+          "ci_high": 0.3703233704795485,
+          "p": 0.017
+        },
+        "hit@5_mcnemar": {
+          "n01": 9,
+          "n10": 2,
+          "p": 0.0654296875
+        }
+      },
+      "hybrid_rrf_vs_bm25": {
+        "ndcg@10_paired_bootstrap": {
+          "diff": 0.17559445447287722,
+          "ci_low": 0.1064624434919112,
+          "ci_high": 0.2528710267914466,
+          "p": 0.0
+        },
+        "hit@5_mcnemar": {
+          "n01": 8,
+          "n10": 1,
+          "p": 0.0390625
+        }
+      },
+      "hybrid_rrf_rerank_vs_bm25": {
+        "ndcg@10_paired_bootstrap": {
+          "diff": 0.28574627337383324,
+          "ci_low": 0.16413037299864094,
+          "ci_high": 0.415397295359758,
+          "p": 0.0
+        },
+        "hit@5_mcnemar": {
+          "n01": 8,
+          "n10": 1,
+          "p": 0.0390625
+        }
+      }
+    }
+  },
+  "per_query": {
+    "bm25": {
+      "metrics": {
+        "q01": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q02": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q03": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q04": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q05": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.9639404333166532
+        },
+        "q06": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q07": {
+          "recall@5": 0.0,
+          "recall@10": 0.3333333333333333,
+          "precision@5": 0.0,
+          "hit@1": 0.0,
+          "hit@5": 0.0,
+          "mrr@10": 0.1111111111111111,
+          "ndcg@10": 0.07287221367144313
+        },
+        "q08": {
+          "recall@5": 0.5,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.5,
+          "ndcg@10": 0.6130998794063822
+        },
+        "q09": {
+          "recall@5": 0.0,
+          "recall@10": 0.5,
+          "precision@5": 0.0,
+          "hit@1": 0.0,
+          "hit@5": 0.0,
+          "mrr@10": 0.1,
+          "ndcg@10": 0.2388353776606868
+        },
+        "q10": {
+          "recall@5": 0.5,
+          "recall@10": 0.5,
+          "precision@5": 0.2,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.25,
+          "ndcg@10": 0.11861329943102608
+        },
+        "q11": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.6885288809404666
+        },
+        "q12": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q13": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.944847956559586
+        },
+        "q14": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.9639404333166532
+        },
+        "q15": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.9639404333166532
+        },
+        "q16": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.9639404333166532
+        },
+        "q17": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.9639404333166532
+        },
+        "q18": {
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "precision@5": 0.0,
+          "hit@1": 0.0,
+          "hit@5": 0.0,
+          "mrr@10": 0.0,
+          "ndcg@10": 0.0
+        },
+        "q19": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.944847956559586
+        },
+        "q20": {
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "precision@5": 0.0,
+          "hit@1": 0.0,
+          "hit@5": 0.0,
+          "mrr@10": 0.0,
+          "ndcg@10": 0.0
+        },
+        "q21": {
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "precision@5": 0.0,
+          "hit@1": 0.0,
+          "hit@5": 0.0,
+          "mrr@10": 0.0,
+          "ndcg@10": 0.0
+        },
+        "q22": {
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "precision@5": 0.0,
+          "hit@1": 0.0,
+          "hit@5": 0.0,
+          "mrr@10": 0.0,
+          "ndcg@10": 0.0
+        },
+        "q23": {
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "precision@5": 0.0,
+          "hit@1": 0.0,
+          "hit@5": 0.0,
+          "mrr@10": 0.0,
+          "ndcg@10": 0.0
+        },
+        "q24": {
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "precision@5": 0.0,
+          "hit@1": 0.0,
+          "hit@5": 0.0,
+          "mrr@10": 0.0,
+          "ndcg@10": 0.0
+        },
+        "q25": {
+          "recall@5": 0.5,
+          "recall@10": 0.5,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.39358515110118686
+        },
+        "q26": {
+          "recall@5": 0.5,
+          "recall@10": 0.5,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.49674701470413135
+        },
+        "q27": {
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "precision@5": 0.0,
+          "hit@1": 0.0,
+          "hit@5": 0.0,
+          "mrr@10": 0.0,
+          "ndcg@10": 0.0
+        },
+        "q28": {
+          "recall@5": 0.3333333333333333,
+          "recall@10": 0.3333333333333333,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.4692787260227565
+        },
+        "q29": {
+          "recall@5": 0.4,
+          "recall@10": 0.4,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.29964812011304043
+        },
+        "q30": {
+          "recall@5": 0.5,
+          "recall@10": 0.5,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.6131471927654584
+        }
+      },
+      "ranked": {
+        "q01": [
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-2",
+          "FR:C. conso:L221-19",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-17",
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-1"
+        ],
+        "q02": [
+          "EU:GDPR:17",
+          "EU:CRD:17",
+          "EU:GDPR:19",
+          "EU:GDPR:20",
+          "EU:GDPR:58",
+          "EU:GDPR:16",
+          "EU:GDPR:70",
+          "EU:GDPR:18",
+          "EU:GDPR:28",
+          "EU:GDPR:15"
+        ],
+        "q03": [
+          "DE:BGB:355",
+          "DE:BGB:485",
+          "DE:BGB:650l",
+          "DE:BGB:356e",
+          "DE:BGB:358",
+          "DE:BGB:356d",
+          "DE:BGB:356f",
+          "DE:BGB:655c",
+          "DE:BGB:312g",
+          "DE:BGB:514"
+        ],
+        "q04": [
+          "EU:CRD:9",
+          "EU:GDPR:9",
+          "EU:CRD:15",
+          "EU:CRD:8",
+          "EU:CRD:10",
+          "EU:CRD:6",
+          "EU:CRD:14",
+          "EU:CRD:11",
+          "EU:CRD:25",
+          "EU:CRD:30"
+        ],
+        "q05": [
+          "EU:GDPR:33",
+          "EU:CRD:33",
+          "EU:GDPR:34",
+          "EU:GDPR:70",
+          "EU:GDPR:40",
+          "EU:GDPR:83",
+          "EU:GDPR:77",
+          "EU:GDPR:41",
+          "EU:GDPR:19",
+          "EU:GDPR:58"
+        ],
+        "q06": [
+          "DE:BGB:312j",
+          "DE:BGB:312",
+          "DE:BGB:857",
+          "DE:BGB:2348",
+          "DE:BGB:2274",
+          "DE:BGB:872",
+          "DE:BGB:2304",
+          "DE:BGB:2343",
+          "DE:BGB:2275",
+          "DE:BGB:2099"
+        ],
+        "q07": [
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-1",
+          "FR:C. conso:L221-17",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-14"
+        ],
+        "q08": [
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-13",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-8",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-18"
+        ],
+        "q09": [
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-15",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-19",
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-26-1",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-9",
+          "FR:C. conso:L221-13",
+          "FR:C. conso:L221-28"
+        ],
+        "q10": [
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-14",
+          "FR:C. conso:L221-26-1",
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-21"
+        ],
+        "q11": [
+          "DE:BGB:355",
+          "DE:BGB:356a",
+          "DE:BGB:357",
+          "DE:BGB:357a",
+          "DE:BGB:357b",
+          "DE:BGB:1355b",
+          "DE:BGB:356",
+          "DE:BGB:357e",
+          "DE:BGB:360",
+          "DE:BGB:312f"
+        ],
+        "q12": [
+          "DE:BGB:356",
+          "DE:BGB:355",
+          "DE:BGB:356b",
+          "DE:BGB:356e",
+          "DE:BGB:356c",
+          "DE:BGB:356d",
+          "DE:BGB:356f",
+          "DE:BGB:357b",
+          "DE:BGB:312f",
+          "DE:BGB:495"
+        ],
+        "q13": [
+          "DE:BGB:356a",
+          "DE:BGB:312j",
+          "DE:BGB:312l",
+          "DE:BGB:312k",
+          "DE:BGB:675i",
+          "DE:BGB:651c",
+          "DE:BGB:675p",
+          "DE:BGB:651g",
+          "DE:BGB:355",
+          "DE:BGB:312d"
+        ],
+        "q14": [
+          "EU:GDPR:33",
+          "EU:GDPR:58",
+          "EU:GDPR:34",
+          "EU:GDPR:47",
+          "EU:GDPR:4",
+          "EU:GDPR:60",
+          "EU:GDPR:70",
+          "EU:GDPR:14",
+          "EU:GDPR:51",
+          "EU:GDPR:36"
+        ],
+        "q15": [
+          "EU:GDPR:8",
+          "EU:GDPR:4",
+          "EU:GDPR:7",
+          "EU:GDPR:6",
+          "EU:GDPR:37",
+          "EU:GDPR:18",
+          "EU:CRD:16",
+          "EU:GDPR:14",
+          "EU:GDPR:3",
+          "EU:GDPR:13"
+        ],
+        "q16": [
+          "EU:GDPR:20",
+          "EU:GDPR:4",
+          "EU:GDPR:15",
+          "EU:GDPR:33",
+          "EU:GDPR:1",
+          "EU:GDPR:14",
+          "EU:CRD:7",
+          "EU:GDPR:12",
+          "EU:GDPR:13",
+          "EU:GDPR:49"
+        ],
+        "q17": [
+          "EU:GDPR:83",
+          "EU:GDPR:70",
+          "EU:GDPR:84",
+          "EU:GDPR:45",
+          "EU:GDPR:58",
+          "EU:GDPR:42",
+          "EU:GDPR:43",
+          "EU:GDPR:1",
+          "EU:GDPR:46",
+          "EU:GDPR:47"
+        ],
+        "q18": [
+          "EU:CRD:21",
+          "EU:CRD:5",
+          "EU:CRD:2",
+          "EU:CRD:6",
+          "EU:CRD:8",
+          "EU:CRD:13",
+          "EU:CRD:16",
+          "EU:CRD:14",
+          "EU:CRD:22",
+          "EU:GDPR:9"
+        ],
+        "q19": [
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-2",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-11",
+          "FR:C. conso:L221-27",
+          "FR:C. conso:L221-12",
+          "FR:C. conso:L221-1",
+          "FR:C. conso:L221-15",
+          "FR:C. conso:L221-22"
+        ],
+        "q20": [
+          "DE:BGB:192",
+          "DE:BGB:78",
+          "DE:BGB:1989",
+          "DE:BGB:2003",
+          "DE:BGB:2001",
+          "DE:BGB:1208",
+          "DE:BGB:2010",
+          "DE:BGB:290",
+          "DE:BGB:1615",
+          "DE:BGB:2176"
+        ],
+        "q21": [],
+        "q22": [
+          "DE:BGB:142",
+          "DE:BGB:1848",
+          "DE:BGB:327a",
+          "DE:BGB:123",
+          "DE:BGB:801",
+          "DE:BGB:436",
+          "DE:BGB:304",
+          "DE:BGB:692",
+          "DE:BGB:122",
+          "DE:BGB:1408"
+        ],
+        "q23": [
+          "DE:BGB:2233",
+          "DE:BGB:493",
+          "DE:BGB:308",
+          "DE:BGB:2247",
+          "DE:BGB:309",
+          "DE:BGB:356",
+          "DE:BGB:1849",
+          "DE:BGB:651k",
+          "DE:BGB:438",
+          "DE:BGB:1852"
+        ],
+        "q24": [],
+        "q25": [
+          "EU:CRD:10",
+          "EU:CRD:11",
+          "EU:CRD:6",
+          "EU:CRD:9",
+          "EU:CRD:8",
+          "EU:CRD:14",
+          "EU:CRD:12",
+          "EU:CRD:16",
+          "EU:CRD:15",
+          "EU:CRD:7"
+        ],
+        "q26": [
+          "EU:CRD:10",
+          "EU:CRD:9",
+          "DE:BGB:356d",
+          "EU:CRD:14",
+          "DE:BGB:356e",
+          "DE:BGB:356c",
+          "DE:BGB:356f",
+          "EU:CRD:13",
+          "DE:BGB:356b",
+          "EU:CRD:16"
+        ],
+        "q27": [
+          "EU:CRD:14",
+          "EU:CRD:16",
+          "EU:CRD:6",
+          "EU:CRD:10",
+          "EU:CRD:9",
+          "EU:CRD:8",
+          "EU:GDPR:14",
+          "EU:CRD:11",
+          "EU:GDPR:43",
+          "EU:CRD:12"
+        ],
+        "q28": [
+          "EU:CRD:16",
+          "EU:CRD:9",
+          "EU:CRD:6",
+          "EU:CRD:14",
+          "EU:CRD:13",
+          "EU:CRD:11",
+          "EU:CRD:8",
+          "EU:CRD:10",
+          "EU:CRD:15",
+          "EU:CRD:12"
+        ],
+        "q29": [
+          "EU:CRD:8",
+          "EU:CRD:7",
+          "EU:CRD:14",
+          "EU:CRD:5",
+          "EU:CRD:6",
+          "EU:CRD:11",
+          "DE:BGB:493",
+          "EU:GDPR:13",
+          "EU:CRD:2",
+          "EU:CRD:12"
+        ],
+        "q30": [
+          "EU:CRD:14",
+          "EU:CRD:13",
+          "EU:CRD:9",
+          "EU:CRD:10",
+          "EU:CRD:16",
+          "EU:CRD:6",
+          "EU:CRD:18",
+          "EU:CRD:8",
+          "EU:CRD:3",
+          "EU:CRD:2"
+        ],
+        "q31": [
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-14",
+          "FR:C. conso:L221-1",
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-12",
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-17",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-13",
+          "FR:C. conso:L221-18"
+        ],
+        "q32": [
+          "DE:BGB:1519",
+          "DE:BGB:1713",
+          "DE:BGB:1604",
+          "DE:BGB:557b",
+          "DE:BGB:1878",
+          "DE:BGB:558d",
+          "DE:BGB:622",
+          "DE:BGB:489",
+          "DE:BGB:559",
+          "DE:BGB:651c"
+        ],
+        "q33": [
+          "EU:GDPR:47",
+          "EU:CRD:21",
+          "EU:CRD:6",
+          "EU:CRD:14",
+          "EU:GDPR:49",
+          "EU:GDPR:5",
+          "EU:GDPR:70",
+          "EU:GDPR:4",
+          "EU:GDPR:83",
+          "EU:CRD:5"
+        ],
+        "q34": [
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-13",
+          "FR:C. conso:L221-19",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-9",
+          "FR:C. conso:L221-16",
+          "FR:C. conso:L221-25"
+        ]
+      },
+      "top_score": {
+        "q01": 10.438721,
+        "q02": 25.879786,
+        "q03": 13.356217,
+        "q04": 20.48037,
+        "q05": 27.243319,
+        "q06": 13.8528385,
+        "q07": 10.721033,
+        "q08": 8.7008505,
+        "q09": 5.8209057,
+        "q10": 11.251471,
+        "q11": 16.499035,
+        "q12": 20.212965,
+        "q13": 16.690493,
+        "q14": 41.37124,
+        "q15": 33.940456,
+        "q16": 32.490772,
+        "q17": 21.342451,
+        "q18": 19.874197,
+        "q19": 3.0793676,
+        "q20": 0.00038636377,
+        "q21": -Infinity,
+        "q22": 7.518352,
+        "q23": 8.180599,
+        "q24": -Infinity,
+        "q25": 20.679722,
+        "q26": 22.38045,
+        "q27": 11.513004,
+        "q28": 33.27865,
+        "q29": 23.692862,
+        "q30": 42.655483,
+        "q31": 6.8550453,
+        "q32": 7.8305974,
+        "q33": 14.605082,
+        "q34": 6.5413685
+      }
+    },
+    "dense": {
+      "metrics": {
+        "q01": {
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "precision@5": 0.0,
+          "hit@1": 0.0,
+          "hit@5": 0.0,
+          "mrr@10": 0.0,
+          "ndcg@10": 0.0
+        },
+        "q02": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q03": {
+          "recall@5": 0.0,
+          "recall@10": 1.0,
+          "precision@5": 0.0,
+          "hit@1": 0.0,
+          "hit@5": 0.0,
+          "mrr@10": 0.125,
+          "ndcg@10": 0.3154648767857287
+        },
+        "q04": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.5,
+          "ndcg@10": 0.6309297535714574
+        },
+        "q05": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q06": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.25,
+          "ndcg@10": 0.4306765580733931
+        },
+        "q07": {
+          "recall@5": 0.6666666666666666,
+          "recall@10": 0.6666666666666666,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.8304853296300547
+        },
+        "q08": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q09": {
+          "recall@5": 0.5,
+          "recall@10": 0.5,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.8262346571285599
+        },
+        "q10": {
+          "recall@5": 0.5,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.25,
+          "ndcg@10": 0.43545169084664054
+        },
+        "q11": {
+          "recall@5": 0.5,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.91311732856428
+        },
+        "q12": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.944847956559586
+        },
+        "q13": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q14": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q15": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.9639404333166532
+        },
+        "q16": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q17": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q18": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q19": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q20": {
+          "recall@5": 0.5,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.5,
+          "ndcg@10": 0.6009078211678822
+        },
+        "q21": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.2,
+          "ndcg@10": 0.38685280723454163
+        },
+        "q22": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.6,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q23": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q24": {
+          "recall@5": 0.5,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.5697222754831122
+        },
+        "q25": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.8,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q26": {
+          "recall@5": 0.5,
+          "recall@10": 0.5,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.6234997966086261
+        },
+        "q27": {
+          "recall@5": 0.3333333333333333,
+          "recall@10": 0.6666666666666666,
+          "precision@5": 0.2,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.3333333333333333,
+          "ndcg@10": 0.39106560501896376
+        },
+        "q28": {
+          "recall@5": 0.3333333333333333,
+          "recall@10": 0.3333333333333333,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.4692787260227565
+        },
+        "q29": {
+          "recall@5": 0.6,
+          "recall@10": 0.8,
+          "precision@5": 0.6,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.5,
+          "ndcg@10": 0.573601455021766
+        },
+        "q30": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.8503449055347546
+        }
+      },
+      "ranked": {
+        "q01": [
+          "FR:C. conso:L221-6",
+          "FR:C. conso:L221-8",
+          "FR:C. conso:L221-11",
+          "FR:C. conso:L221-4",
+          "FR:C. conso:L221-22",
+          "FR:C. conso:L221-17",
+          "FR:C. conso:L221-10-1",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-16",
+          "FR:C. conso:L221-14"
+        ],
+        "q02": [
+          "EU:GDPR:17",
+          "EU:GDPR:18",
+          "EU:GDPR:16",
+          "EU:GDPR:15",
+          "EU:GDPR:20",
+          "EU:GDPR:19",
+          "EU:GDPR:21",
+          "EU:GDPR:13",
+          "EU:GDPR:58",
+          "EU:GDPR:14"
+        ],
+        "q03": [
+          "DE:BGB:35",
+          "DE:BGB:675e",
+          "DE:BGB:312",
+          "DE:BGB:558a",
+          "DE:BGB:569",
+          "DE:BGB:312g",
+          "DE:BGB:655e",
+          "DE:BGB:355",
+          "DE:BGB:549",
+          "DE:BGB:575a"
+        ],
+        "q04": [
+          "EU:CRD:3",
+          "EU:CRD:9",
+          "EU:CRD:33",
+          "EU:CRD:15",
+          "EU:CRD:32",
+          "EU:CRD:14",
+          "EU:CRD:8",
+          "EU:CRD:16",
+          "EU:CRD:6",
+          "EU:CRD:27"
+        ],
+        "q05": [
+          "EU:GDPR:33",
+          "EU:GDPR:34",
+          "EU:GDPR:83",
+          "EU:CRD:33",
+          "EU:GDPR:84",
+          "EU:CRD:32",
+          "EU:GDPR:19",
+          "EU:GDPR:12",
+          "EU:GDPR:28",
+          "EU:CRD:26"
+        ],
+        "q06": [
+          "DE:BGB:312k",
+          "DE:BGB:312h",
+          "DE:BGB:312",
+          "DE:BGB:312j",
+          "DE:BGB:308",
+          "DE:BGB:312m",
+          "DE:BGB:309",
+          "DE:BGB:306a",
+          "DE:BGB:312f",
+          "DE:BGB:1200"
+        ],
+        "q07": [
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-26-1",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-13"
+        ],
+        "q08": [
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-5"
+        ],
+        "q09": [
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-27",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-22",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-26-1",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-21"
+        ],
+        "q10": [
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-26-1",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-9",
+          "FR:C. conso:L221-5"
+        ],
+        "q11": [
+          "DE:BGB:357",
+          "DE:BGB:357b",
+          "DE:BGB:508",
+          "DE:BGB:357a",
+          "DE:BGB:357e",
+          "DE:BGB:357c",
+          "DE:BGB:482a",
+          "DE:BGB:355",
+          "DE:BGB:475",
+          "DE:BGB:650l"
+        ],
+        "q12": [
+          "DE:BGB:356",
+          "DE:BGB:356d",
+          "DE:BGB:356f",
+          "DE:BGB:355",
+          "DE:BGB:356c",
+          "DE:BGB:356e",
+          "DE:BGB:312g",
+          "DE:BGB:357b",
+          "DE:BGB:356b",
+          "DE:BGB:356a"
+        ],
+        "q13": [
+          "DE:BGB:356a",
+          "DE:BGB:312k",
+          "DE:BGB:482a",
+          "DE:BGB:356",
+          "DE:BGB:357a",
+          "DE:BGB:357",
+          "DE:BGB:312g",
+          "DE:BGB:650l",
+          "DE:BGB:312f",
+          "DE:BGB:357b"
+        ],
+        "q14": [
+          "EU:GDPR:33",
+          "EU:GDPR:34",
+          "EU:GDPR:36",
+          "EU:GDPR:19",
+          "EU:GDPR:12",
+          "EU:GDPR:42",
+          "EU:GDPR:28",
+          "EU:GDPR:60",
+          "EU:GDPR:30",
+          "EU:GDPR:66"
+        ],
+        "q15": [
+          "EU:GDPR:8",
+          "EU:GDPR:12",
+          "EU:GDPR:7",
+          "EU:GDPR:22",
+          "EU:GDPR:21",
+          "EU:GDPR:6",
+          "EU:GDPR:25",
+          "EU:GDPR:40",
+          "EU:GDPR:57",
+          "EU:GDPR:20"
+        ],
+        "q16": [
+          "EU:GDPR:20",
+          "EU:GDPR:15",
+          "EU:GDPR:46",
+          "EU:GDPR:49",
+          "EU:GDPR:48",
+          "EU:GDPR:44",
+          "EU:GDPR:45",
+          "EU:GDPR:13",
+          "EU:GDPR:14",
+          "EU:GDPR:86"
+        ],
+        "q17": [
+          "EU:GDPR:83",
+          "EU:GDPR:84",
+          "EU:GDPR:23",
+          "EU:GDPR:25",
+          "EU:GDPR:33",
+          "EU:GDPR:35",
+          "EU:GDPR:79",
+          "EU:GDPR:70",
+          "EU:GDPR:10",
+          "EU:GDPR:34"
+        ],
+        "q18": [
+          "EU:CRD:19",
+          "EU:CRD:22",
+          "EU:CRD:21",
+          "EU:CRD:13",
+          "EU:CRD:6",
+          "EU:CRD:5",
+          "EU:CRD:14",
+          "EU:CRD:7",
+          "EU:CRD:8",
+          "EU:CRD:16"
+        ],
+        "q19": [
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-26-1"
+        ],
+        "q20": [
+          "DE:BGB:357b",
+          "DE:BGB:357",
+          "DE:BGB:356d",
+          "DE:BGB:675x",
+          "DE:BGB:475d",
+          "DE:BGB:356f",
+          "DE:BGB:382",
+          "DE:BGB:532",
+          "DE:BGB:651h",
+          "DE:BGB:355"
+        ],
+        "q21": [
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-2",
+          "FR:C. conso:L221-26-1",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-10-1",
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-22",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-18"
+        ],
+        "q22": [
+          "DE:BGB:312j",
+          "DE:BGB:312i",
+          "DE:BGB:312d",
+          "DE:BGB:327b",
+          "DE:BGB:312l",
+          "DE:BGB:675t",
+          "DE:BGB:650n",
+          "DE:BGB:312f",
+          "DE:BGB:482",
+          "DE:BGB:312a"
+        ],
+        "q23": [
+          "DE:BGB:241a",
+          "DE:BGB:445a",
+          "DE:BGB:1087",
+          "DE:BGB:312e",
+          "DE:BGB:439",
+          "DE:BGB:675u",
+          "DE:BGB:645",
+          "DE:BGB:357",
+          "DE:BGB:676b",
+          "DE:BGB:640"
+        ],
+        "q24": [
+          "DE:BGB:447",
+          "DE:BGB:644",
+          "DE:BGB:2380",
+          "DE:BGB:457",
+          "DE:BGB:446",
+          "DE:BGB:475",
+          "DE:BGB:1067",
+          "DE:BGB:478",
+          "DE:BGB:479b",
+          "DE:BGB:327f"
+        ],
+        "q25": [
+          "EU:CRD:9",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-20",
+          "EU:CRD:10",
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-23",
+          "EU:CRD:12",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-26-1",
+          "EU:CRD:16"
+        ],
+        "q26": [
+          "EU:CRD:9",
+          "DE:BGB:356",
+          "EU:CRD:14",
+          "DE:BGB:356d",
+          "DE:BGB:357b",
+          "DE:BGB:356a",
+          "DE:BGB:312g",
+          "DE:BGB:357",
+          "EU:CRD:15",
+          "EU:CRD:16"
+        ],
+        "q27": [
+          "EU:CRD:10",
+          "EU:CRD:9",
+          "EU:CRD:13",
+          "EU:CRD:14",
+          "DE:BGB:357b",
+          "FR:C. conso:L221-23",
+          "DE:BGB:357",
+          "DE:BGB:356d",
+          "DE:BGB:356f",
+          "DE:BGB:355"
+        ],
+        "q28": [
+          "EU:CRD:16",
+          "EU:CRD:9",
+          "EU:CRD:14",
+          "EU:GDPR:89",
+          "EU:GDPR:49",
+          "EU:CRD:12",
+          "EU:CRD:15",
+          "DE:BGB:450",
+          "EU:CRD:10",
+          "DE:BGB:444"
+        ],
+        "q29": [
+          "EU:CRD:5",
+          "EU:CRD:6",
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-12",
+          "EU:CRD:8",
+          "FR:C. conso:L221-11",
+          "FR:C. conso:L221-14",
+          "EU:CRD:7",
+          "FR:C. conso:L221-7",
+          "FR:C. conso:L221-8"
+        ],
+        "q30": [
+          "EU:CRD:14",
+          "EU:CRD:13",
+          "EU:CRD:9",
+          "EU:CRD:10",
+          "FR:C. conso:L221-23",
+          "EU:CRD:18",
+          "EU:CRD:16",
+          "EU:CRD:11",
+          "EU:CRD:6",
+          "FR:C. conso:L221-24"
+        ],
+        "q31": [
+          "FR:C. conso:L221-13",
+          "FR:C. conso:L221-16",
+          "FR:C. conso:L221-9",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-2",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-1",
+          "FR:C. conso:L221-4"
+        ],
+        "q32": [
+          "DE:BGB:1612a",
+          "DE:BGB:971",
+          "DE:BGB:557b",
+          "DE:BGB:247",
+          "DE:BGB:655",
+          "DE:BGB:675i",
+          "DE:BGB:652",
+          "DE:BGB:650m",
+          "DE:BGB:411",
+          "DE:BGB:628"
+        ],
+        "q33": [
+          "EU:GDPR:83",
+          "EU:GDPR:47",
+          "EU:GDPR:4",
+          "EU:CRD:6",
+          "EU:GDPR:99",
+          "EU:CRD:3",
+          "EU:GDPR:8",
+          "EU:CRD:32",
+          "EU:GDPR:12",
+          "EU:CRD:33"
+        ],
+        "q34": [
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-19",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-24"
+        ]
+      },
+      "top_score": {
+        "q01": 0.7838732,
+        "q02": 0.88487947,
+        "q03": 0.757012,
+        "q04": 0.81230056,
+        "q05": 0.82613754,
+        "q06": 0.77385706,
+        "q07": 0.8486898,
+        "q08": 0.8524834,
+        "q09": 0.832432,
+        "q10": 0.8279073,
+        "q11": 0.864267,
+        "q12": 0.87753403,
+        "q13": 0.8314358,
+        "q14": 0.8802616,
+        "q15": 0.87422967,
+        "q16": 0.8272618,
+        "q17": 0.85167724,
+        "q18": 0.81904566,
+        "q19": 0.82525194,
+        "q20": 0.80108523,
+        "q21": 0.7445956,
+        "q22": 0.8322293,
+        "q23": 0.821962,
+        "q24": 0.8105633,
+        "q25": 0.8757856,
+        "q26": 0.8589652,
+        "q27": 0.83968145,
+        "q28": 0.8336561,
+        "q29": 0.8620963,
+        "q30": 0.8822148,
+        "q31": 0.7543993,
+        "q32": 0.7515165,
+        "q33": 0.75439906,
+        "q34": 0.7621494
+      }
+    },
+    "hybrid_rrf": {
+      "metrics": {
+        "q01": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q02": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q03": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q04": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q05": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.9639404333166532
+        },
+        "q06": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q07": {
+          "recall@5": 0.6666666666666666,
+          "recall@10": 0.6666666666666666,
+          "precision@5": 0.4,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.25,
+          "ndcg@10": 0.38520020302966707
+        },
+        "q08": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.9639404333166532
+        },
+        "q09": {
+          "recall@5": 0.5,
+          "recall@10": 0.5,
+          "precision@5": 0.2,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.3333333333333333,
+          "ndcg@10": 0.41311732856427996
+        },
+        "q10": {
+          "recall@5": 0.0,
+          "recall@10": 1.0,
+          "precision@5": 0.0,
+          "hit@1": 0.0,
+          "hit@5": 0.0,
+          "mrr@10": 0.125,
+          "ndcg@10": 0.3356040866885614
+        },
+        "q11": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.944847956559586
+        },
+        "q12": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q13": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q14": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q15": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q16": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q17": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q18": {
+          "recall@5": 0.0,
+          "recall@10": 1.0,
+          "precision@5": 0.0,
+          "hit@1": 0.0,
+          "hit@5": 0.0,
+          "mrr@10": 0.1111111111111111,
+          "ndcg@10": 0.3010299956639812
+        },
+        "q19": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q20": {
+          "recall@5": 0.5,
+          "recall@10": 0.5,
+          "precision@5": 0.2,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.2,
+          "ndcg@10": 0.3196311965446524
+        },
+        "q21": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.2,
+          "ndcg@10": 0.38685280723454163
+        },
+        "q22": {
+          "recall@5": 0.6666666666666666,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.5,
+          "ndcg@10": 0.6380765135931138
+        },
+        "q23": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.5,
+          "ndcg@10": 0.6309297535714574
+        },
+        "q24": {
+          "recall@5": 0.5,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.5697222754831122
+        },
+        "q25": {
+          "recall@5": 0.5,
+          "recall@10": 0.5,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.49674701470413135
+        },
+        "q26": {
+          "recall@5": 0.75,
+          "recall@10": 0.75,
+          "precision@5": 0.6,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.6555425040860987
+        },
+        "q27": {
+          "recall@5": 0.3333333333333333,
+          "recall@10": 0.3333333333333333,
+          "precision@5": 0.2,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.25,
+          "ndcg@10": 0.20210734650054762
+        },
+        "q28": {
+          "recall@5": 0.3333333333333333,
+          "recall@10": 0.3333333333333333,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.4692787260227565
+        },
+        "q29": {
+          "recall@5": 0.4,
+          "recall@10": 0.8,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.6918718020600798
+        },
+        "q30": {
+          "recall@5": 0.5,
+          "recall@10": 0.5,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.6131471927654584
+        }
+      },
+      "ranked": {
+        "q01": [
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-17",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-2",
+          "FR:C. conso:L221-6",
+          "FR:C. conso:L221-22",
+          "FR:C. conso:L221-11",
+          "FR:C. conso:L221-8"
+        ],
+        "q02": [
+          "EU:GDPR:17",
+          "EU:CRD:17",
+          "EU:GDPR:20",
+          "EU:GDPR:16",
+          "EU:GDPR:19",
+          "EU:GDPR:58",
+          "EU:GDPR:18",
+          "EU:GDPR:15",
+          "EU:GDPR:14",
+          "EU:GDPR:23"
+        ],
+        "q03": [
+          "DE:BGB:355",
+          "DE:BGB:650l",
+          "DE:BGB:312g",
+          "DE:BGB:358",
+          "DE:BGB:35",
+          "DE:BGB:485",
+          "DE:BGB:675e",
+          "DE:BGB:312",
+          "DE:BGB:356e",
+          "DE:BGB:558a"
+        ],
+        "q04": [
+          "EU:CRD:9",
+          "EU:GDPR:9",
+          "EU:CRD:15",
+          "EU:CRD:8",
+          "EU:CRD:14",
+          "EU:CRD:3",
+          "EU:CRD:6",
+          "EU:CRD:16",
+          "EU:CRD:33",
+          "EU:CRD:11"
+        ],
+        "q05": [
+          "EU:GDPR:33",
+          "EU:CRD:33",
+          "EU:GDPR:34",
+          "EU:GDPR:83",
+          "EU:GDPR:19",
+          "EU:GDPR:84",
+          "EU:GDPR:41",
+          "EU:GDPR:70",
+          "EU:GDPR:40",
+          "EU:CRD:32"
+        ],
+        "q06": [
+          "DE:BGB:312j",
+          "DE:BGB:312",
+          "DE:BGB:312k",
+          "DE:BGB:857",
+          "DE:BGB:312h",
+          "DE:BGB:2348",
+          "DE:BGB:2274",
+          "DE:BGB:308",
+          "DE:BGB:872",
+          "DE:BGB:2304"
+        ],
+        "q07": [
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-13"
+        ],
+        "q08": [
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-13",
+          "FR:C. conso:L221-21"
+        ],
+        "q09": [
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-26-1",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-19",
+          "FR:C. conso:L221-22",
+          "FR:C. conso:L221-27"
+        ],
+        "q10": [
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-26-1",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-10"
+        ],
+        "q11": [
+          "DE:BGB:357",
+          "DE:BGB:357b",
+          "DE:BGB:357a",
+          "DE:BGB:355",
+          "DE:BGB:357e",
+          "DE:BGB:356a",
+          "DE:BGB:356",
+          "DE:BGB:508",
+          "DE:BGB:482a",
+          "DE:BGB:357c"
+        ],
+        "q12": [
+          "DE:BGB:356",
+          "DE:BGB:355",
+          "DE:BGB:356d",
+          "DE:BGB:356e",
+          "DE:BGB:356c",
+          "DE:BGB:356b",
+          "DE:BGB:356f",
+          "DE:BGB:357b",
+          "DE:BGB:312g",
+          "DE:BGB:495"
+        ],
+        "q13": [
+          "DE:BGB:356a",
+          "DE:BGB:312k",
+          "DE:BGB:312j",
+          "DE:BGB:355",
+          "DE:BGB:109",
+          "DE:BGB:531",
+          "DE:BGB:360",
+          "DE:BGB:532",
+          "DE:BGB:312l",
+          "DE:BGB:482a"
+        ],
+        "q14": [
+          "EU:GDPR:33",
+          "EU:GDPR:34",
+          "EU:GDPR:36",
+          "EU:GDPR:58",
+          "EU:GDPR:60",
+          "EU:GDPR:14",
+          "EU:GDPR:47",
+          "EU:GDPR:51",
+          "EU:GDPR:12",
+          "EU:GDPR:46"
+        ],
+        "q15": [
+          "EU:GDPR:8",
+          "EU:GDPR:7",
+          "EU:GDPR:6",
+          "EU:GDPR:25",
+          "EU:GDPR:20",
+          "EU:GDPR:15",
+          "EU:GDPR:18",
+          "EU:GDPR:13",
+          "EU:GDPR:12",
+          "EU:GDPR:21"
+        ],
+        "q16": [
+          "EU:GDPR:20",
+          "EU:GDPR:15",
+          "EU:GDPR:49",
+          "EU:GDPR:14",
+          "EU:GDPR:13",
+          "EU:GDPR:44",
+          "EU:CRD:7",
+          "EU:GDPR:17",
+          "EU:GDPR:45",
+          "EU:GDPR:4"
+        ],
+        "q17": [
+          "EU:GDPR:83",
+          "EU:GDPR:84",
+          "EU:GDPR:70",
+          "EU:GDPR:58",
+          "EU:GDPR:47",
+          "EU:GDPR:57",
+          "EU:GDPR:46",
+          "EU:GDPR:79",
+          "EU:GDPR:25",
+          "EU:GDPR:35"
+        ],
+        "q18": [
+          "EU:CRD:21",
+          "EU:CRD:5",
+          "EU:CRD:6",
+          "EU:CRD:13",
+          "EU:CRD:22",
+          "EU:CRD:14",
+          "EU:CRD:16",
+          "EU:CRD:8",
+          "EU:CRD:19",
+          "EU:CRD:7"
+        ],
+        "q19": [
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-27",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-12",
+          "FR:C. conso:L221-26-1",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-23"
+        ],
+        "q20": [
+          "DE:BGB:591b",
+          "DE:BGB:357b",
+          "DE:BGB:192",
+          "DE:BGB:78",
+          "DE:BGB:357",
+          "DE:BGB:1989",
+          "DE:BGB:356d",
+          "DE:BGB:675x",
+          "DE:BGB:2003",
+          "DE:BGB:2001"
+        ],
+        "q21": [
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-2",
+          "FR:C. conso:L221-26-1",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-10-1",
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-22",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-18"
+        ],
+        "q22": [
+          "DE:BGB:491a",
+          "DE:BGB:312j",
+          "DE:BGB:142",
+          "DE:BGB:1848",
+          "DE:BGB:312i",
+          "DE:BGB:312d",
+          "DE:BGB:327a",
+          "DE:BGB:123",
+          "DE:BGB:327b",
+          "DE:BGB:801"
+        ],
+        "q23": [
+          "DE:BGB:309",
+          "DE:BGB:241a",
+          "DE:BGB:2233",
+          "DE:BGB:445a",
+          "DE:BGB:493",
+          "DE:BGB:1087",
+          "DE:BGB:308",
+          "DE:BGB:312e",
+          "DE:BGB:2247",
+          "DE:BGB:439"
+        ],
+        "q24": [
+          "DE:BGB:447",
+          "DE:BGB:644",
+          "DE:BGB:2380",
+          "DE:BGB:457",
+          "DE:BGB:446",
+          "DE:BGB:475",
+          "DE:BGB:1067",
+          "DE:BGB:478",
+          "DE:BGB:479b",
+          "DE:BGB:327f"
+        ],
+        "q25": [
+          "EU:CRD:10",
+          "EU:CRD:9",
+          "EU:CRD:6",
+          "EU:CRD:12",
+          "EU:CRD:16",
+          "EU:CRD:11",
+          "EU:CRD:15",
+          "EU:CRD:14",
+          "EU:CRD:8",
+          "EU:CRD:13"
+        ],
+        "q26": [
+          "EU:CRD:9",
+          "DE:BGB:356d",
+          "EU:CRD:14",
+          "EU:CRD:10",
+          "DE:BGB:356",
+          "DE:BGB:356f",
+          "EU:CRD:16",
+          "DE:BGB:356e",
+          "EU:CRD:15",
+          "DE:BGB:357b"
+        ],
+        "q27": [
+          "EU:CRD:10",
+          "EU:CRD:14",
+          "EU:CRD:9",
+          "EU:CRD:13",
+          "EU:CRD:16",
+          "EU:CRD:6",
+          "EU:CRD:11",
+          "EU:CRD:12",
+          "EU:CRD:15",
+          "DE:BGB:357b"
+        ],
+        "q28": [
+          "EU:CRD:16",
+          "EU:CRD:9",
+          "EU:CRD:14",
+          "EU:CRD:12",
+          "EU:CRD:15",
+          "EU:CRD:6",
+          "EU:CRD:10",
+          "EU:CRD:13",
+          "EU:GDPR:89",
+          "EU:GDPR:18"
+        ],
+        "q29": [
+          "EU:CRD:6",
+          "EU:CRD:8",
+          "EU:CRD:5",
+          "EU:CRD:7",
+          "EU:CRD:2",
+          "FR:C. conso:L221-5",
+          "EU:CRD:14",
+          "FR:C. conso:L221-12",
+          "EU:CRD:11",
+          "FR:C. conso:L221-11"
+        ],
+        "q30": [
+          "EU:CRD:14",
+          "EU:CRD:13",
+          "EU:CRD:9",
+          "EU:CRD:10",
+          "EU:CRD:16",
+          "EU:CRD:18",
+          "EU:CRD:6",
+          "EU:CRD:11",
+          "EU:CRD:8",
+          "EU:CRD:15"
+        ],
+        "q31": [
+          "FR:C. conso:L221-13",
+          "FR:C. conso:L221-1",
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-16",
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-9",
+          "FR:C. conso:L221-12",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-14"
+        ],
+        "q32": [
+          "DE:BGB:557b",
+          "DE:BGB:1878",
+          "DE:BGB:622",
+          "DE:BGB:559",
+          "DE:BGB:244",
+          "DE:BGB:1519",
+          "DE:BGB:1612a",
+          "DE:BGB:1713",
+          "DE:BGB:971",
+          "DE:BGB:1604"
+        ],
+        "q33": [
+          "EU:GDPR:47",
+          "EU:GDPR:83",
+          "EU:GDPR:4",
+          "EU:GDPR:58",
+          "EU:CRD:32",
+          "EU:GDPR:8",
+          "EU:GDPR:35",
+          "EU:CRD:21",
+          "EU:CRD:6",
+          "EU:CRD:14"
+        ],
+        "q34": [
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-19",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-13"
+        ]
+      },
+      "top_score": {
+        "q01": 0.026655348047538198,
+        "q02": 0.03252247488101534,
+        "q03": 0.030886196246139225,
+        "q04": 0.03252247488101534,
+        "q05": 0.03252247488101534,
+        "q06": 0.03177805800756621,
+        "q07": 0.03200204813108039,
+        "q08": 0.03252247488101534,
+        "q09": 0.031009615384615385,
+        "q10": 0.03278688524590164,
+        "q11": 0.032266458495966696,
+        "q12": 0.03278688524590164,
+        "q13": 0.03278688524590164,
+        "q14": 0.03278688524590164,
+        "q15": 0.03278688524590164,
+        "q16": 0.03278688524590164,
+        "q17": 0.03225806451612903,
+        "q18": 0.032266458495966696,
+        "q19": 0.03278688524590164,
+        "q20": 0.022767295597484277,
+        "q21": 0.01639344262295082,
+        "q22": 0.020141700404858298,
+        "q23": 0.022366965712178936,
+        "q24": 0.01639344262295082,
+        "q25": 0.032018442622950824,
+        "q26": 0.03252247488101534,
+        "q27": 0.032018442622950824,
+        "q28": 0.03252247488101534,
+        "q29": 0.031054405392392875,
+        "q30": 0.03278688524590164,
+        "q31": 0.030679156908665108,
+        "q32": 0.03149801587301587,
+        "q33": 0.030798389007344232,
+        "q34": 0.03252247488101534
+      }
+    },
+    "hybrid_rrf_rerank": {
+      "metrics": {
+        "q01": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q02": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q03": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q04": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q05": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.9639404333166532
+        },
+        "q06": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q07": {
+          "recall@5": 0.6666666666666666,
+          "recall@10": 0.6666666666666666,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.8304853296300547
+        },
+        "q08": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.9639404333166532
+        },
+        "q09": {
+          "recall@5": 0.5,
+          "recall@10": 0.5,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.8262346571285599
+        },
+        "q10": {
+          "recall@5": 0.0,
+          "recall@10": 1.0,
+          "precision@5": 0.0,
+          "hit@1": 0.0,
+          "hit@5": 0.0,
+          "mrr@10": 0.16666666666666666,
+          "ndcg@10": 0.37721786152453934
+        },
+        "q11": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q12": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.9639404333166532
+        },
+        "q13": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q14": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q15": {
+          "recall@5": 0.5,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.9243382314975351
+        },
+        "q16": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q17": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.944847956559586
+        },
+        "q18": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q19": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.7967075809905066
+        },
+        "q20": {
+          "recall@5": 0.0,
+          "recall@10": 0.5,
+          "precision@5": 0.0,
+          "hit@1": 0.0,
+          "hit@5": 0.0,
+          "mrr@10": 0.14285714285714285,
+          "ndcg@10": 0.27541155237618664
+        },
+        "q21": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.5,
+          "ndcg@10": 0.6309297535714574
+        },
+        "q22": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.6,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.9832184408687481
+        },
+        "q23": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q24": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.4,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.631251450669265
+        },
+        "q25": {
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "precision@5": 0.8,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 1.0
+        },
+        "q26": {
+          "recall@5": 0.75,
+          "recall@10": 1.0,
+          "precision@5": 0.6,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.8180564879930553
+        },
+        "q27": {
+          "recall@5": 0.3333333333333333,
+          "recall@10": 0.6666666666666666,
+          "precision@5": 0.2,
+          "hit@1": 0.0,
+          "hit@5": 1.0,
+          "mrr@10": 0.3333333333333333,
+          "ndcg@10": 0.4017998179775806
+        },
+        "q28": {
+          "recall@5": 0.3333333333333333,
+          "recall@10": 0.3333333333333333,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.4692787260227565
+        },
+        "q29": {
+          "recall@5": 0.6,
+          "recall@10": 0.8,
+          "precision@5": 0.6,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.6529883603905988
+        },
+        "q30": {
+          "recall@5": 0.5,
+          "recall@10": 1.0,
+          "precision@5": 0.2,
+          "hit@1": 1.0,
+          "hit@5": 1.0,
+          "mrr@10": 1.0,
+          "ndcg@10": 0.8315546295836226
+        }
+      },
+      "ranked": {
+        "q01": [
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-8",
+          "FR:C. conso:L221-19",
+          "FR:C. conso:L221-17",
+          "FR:C. conso:L221-1",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-5"
+        ],
+        "q02": [
+          "EU:GDPR:17",
+          "EU:CRD:17",
+          "EU:GDPR:19",
+          "EU:GDPR:20",
+          "EU:GDPR:58",
+          "EU:GDPR:18",
+          "EU:GDPR:14",
+          "EU:GDPR:70",
+          "EU:GDPR:15",
+          "EU:GDPR:16"
+        ],
+        "q03": [
+          "DE:BGB:355",
+          "DE:BGB:650l",
+          "DE:BGB:312g",
+          "DE:BGB:485",
+          "DE:BGB:495",
+          "DE:BGB:356d",
+          "DE:BGB:308",
+          "DE:BGB:514",
+          "DE:BGB:356f",
+          "DE:BGB:358"
+        ],
+        "q04": [
+          "EU:CRD:9",
+          "EU:GDPR:9",
+          "EU:CRD:8",
+          "EU:CRD:14",
+          "EU:CRD:29",
+          "EU:CRD:15",
+          "EU:CRD:10",
+          "EU:CRD:16",
+          "EU:CRD:11",
+          "EU:CRD:3"
+        ],
+        "q05": [
+          "EU:GDPR:33",
+          "EU:CRD:33",
+          "EU:GDPR:34",
+          "EU:GDPR:70",
+          "EU:GDPR:40",
+          "EU:GDPR:19",
+          "EU:GDPR:83",
+          "EU:GDPR:84",
+          "EU:GDPR:41",
+          "EU:GDPR:77"
+        ],
+        "q06": [
+          "DE:BGB:312j",
+          "DE:BGB:312",
+          "DE:BGB:312k",
+          "DE:BGB:312f",
+          "DE:BGB:312h",
+          "DE:BGB:312m",
+          "DE:BGB:308",
+          "DE:BGB:309",
+          "DE:BGB:306a",
+          "DE:BGB:263"
+        ],
+        "q07": [
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-13",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-26-1"
+        ],
+        "q08": [
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-13",
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-19"
+        ],
+        "q09": [
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-26-1",
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-27",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-20"
+        ],
+        "q10": [
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-25",
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-26-1",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-13"
+        ],
+        "q11": [
+          "DE:BGB:357",
+          "DE:BGB:355",
+          "DE:BGB:356",
+          "DE:BGB:357b",
+          "DE:BGB:327o",
+          "DE:BGB:357a",
+          "DE:BGB:356f",
+          "DE:BGB:356a",
+          "DE:BGB:482a",
+          "DE:BGB:358"
+        ],
+        "q12": [
+          "DE:BGB:356",
+          "DE:BGB:356d",
+          "DE:BGB:355",
+          "DE:BGB:312g",
+          "DE:BGB:312f",
+          "DE:BGB:495",
+          "DE:BGB:356c",
+          "DE:BGB:357b",
+          "DE:BGB:357",
+          "DE:BGB:356a"
+        ],
+        "q13": [
+          "DE:BGB:356a",
+          "DE:BGB:312k",
+          "DE:BGB:312j",
+          "DE:BGB:356",
+          "DE:BGB:312g",
+          "DE:BGB:355",
+          "DE:BGB:482a",
+          "DE:BGB:357",
+          "DE:BGB:495",
+          "DE:BGB:675p"
+        ],
+        "q14": [
+          "EU:GDPR:33",
+          "EU:GDPR:34",
+          "EU:GDPR:14",
+          "EU:GDPR:36",
+          "EU:GDPR:12",
+          "EU:GDPR:58",
+          "EU:GDPR:70",
+          "EU:GDPR:60",
+          "EU:GDPR:90",
+          "EU:GDPR:4"
+        ],
+        "q15": [
+          "EU:GDPR:8",
+          "EU:GDPR:6",
+          "EU:GDPR:4",
+          "EU:GDPR:9",
+          "EU:GDPR:14",
+          "EU:GDPR:7",
+          "EU:GDPR:12",
+          "EU:GDPR:5",
+          "EU:GDPR:57",
+          "EU:GDPR:32"
+        ],
+        "q16": [
+          "EU:GDPR:20",
+          "EU:GDPR:15",
+          "EU:GDPR:14",
+          "EU:GDPR:13",
+          "EU:GDPR:12",
+          "EU:GDPR:4",
+          "EU:GDPR:17",
+          "EU:GDPR:45",
+          "EU:GDPR:49",
+          "EU:GDPR:46"
+        ],
+        "q17": [
+          "EU:GDPR:83",
+          "EU:GDPR:70",
+          "EU:GDPR:58",
+          "EU:GDPR:84",
+          "EU:GDPR:47",
+          "EU:GDPR:77",
+          "EU:GDPR:79",
+          "EU:GDPR:45",
+          "EU:GDPR:57",
+          "EU:GDPR:37"
+        ],
+        "q18": [
+          "EU:CRD:19",
+          "EU:CRD:6",
+          "EU:CRD:13",
+          "EU:CRD:22",
+          "EU:CRD:2",
+          "EU:CRD:5",
+          "EU:CRD:3",
+          "EU:CRD:14",
+          "EU:CRD:21",
+          "EU:CRD:8"
+        ],
+        "q19": [
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-13",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-26-1",
+          "FR:C. conso:L221-26",
+          "FR:C. conso:L221-12",
+          "FR:C. conso:L221-19",
+          "FR:C. conso:L221-28"
+        ],
+        "q20": [
+          "DE:BGB:357b",
+          "DE:BGB:675x",
+          "DE:BGB:651h",
+          "DE:BGB:382",
+          "DE:BGB:356f",
+          "DE:BGB:356d",
+          "DE:BGB:357",
+          "DE:BGB:532",
+          "DE:BGB:356e",
+          "DE:BGB:1202"
+        ],
+        "q21": [
+          "FR:C. conso:L221-24",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-26-1",
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-13",
+          "FR:C. conso:L221-9",
+          "FR:C. conso:L221-22",
+          "FR:C. conso:L221-2"
+        ],
+        "q22": [
+          "DE:BGB:312j",
+          "DE:BGB:312i",
+          "DE:BGB:312l",
+          "DE:BGB:312d",
+          "DE:BGB:312f",
+          "DE:BGB:312a",
+          "DE:BGB:327e",
+          "DE:BGB:327b",
+          "DE:BGB:327a",
+          "DE:BGB:650n"
+        ],
+        "q23": [
+          "DE:BGB:241a",
+          "DE:BGB:312e",
+          "DE:BGB:445a",
+          "DE:BGB:312g",
+          "DE:BGB:357",
+          "DE:BGB:439",
+          "DE:BGB:309",
+          "DE:BGB:475",
+          "DE:BGB:648",
+          "DE:BGB:438"
+        ],
+        "q24": [
+          "DE:BGB:447",
+          "DE:BGB:644",
+          "DE:BGB:446",
+          "DE:BGB:475",
+          "DE:BGB:701",
+          "DE:BGB:478",
+          "DE:BGB:2380",
+          "DE:BGB:357",
+          "DE:BGB:445a",
+          "DE:BGB:457"
+        ],
+        "q25": [
+          "FR:C. conso:L221-18",
+          "EU:CRD:9",
+          "FR:C. conso:L221-20",
+          "EU:CRD:10",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-23",
+          "EU:CRD:16",
+          "EU:CRD:8",
+          "EU:CRD:14"
+        ],
+        "q26": [
+          "EU:CRD:9",
+          "DE:BGB:356d",
+          "EU:CRD:14",
+          "EU:CRD:10",
+          "DE:BGB:356",
+          "EU:CRD:13",
+          "DE:BGB:357",
+          "DE:BGB:355",
+          "DE:BGB:356c",
+          "DE:BGB:312g"
+        ],
+        "q27": [
+          "EU:CRD:14",
+          "DE:BGB:357b",
+          "EU:CRD:13",
+          "EU:CRD:10",
+          "DE:BGB:355",
+          "DE:BGB:357",
+          "EU:CRD:9",
+          "DE:BGB:356f",
+          "DE:BGB:356d",
+          "EU:CRD:16"
+        ],
+        "q28": [
+          "EU:CRD:16",
+          "EU:CRD:9",
+          "EU:CRD:14",
+          "EU:CRD:6",
+          "EU:CRD:15",
+          "EU:CRD:13",
+          "EU:CRD:10",
+          "EU:CRD:8",
+          "EU:CRD:11",
+          "EU:CRD:12"
+        ],
+        "q29": [
+          "EU:CRD:8",
+          "FR:C. conso:L221-5",
+          "EU:CRD:6",
+          "EU:CRD:5",
+          "EU:CRD:7",
+          "FR:C. conso:L221-12",
+          "FR:C. conso:L221-14",
+          "FR:C. conso:L221-11",
+          "EU:CRD:2",
+          "EU:CRD:14"
+        ],
+        "q30": [
+          "EU:CRD:14",
+          "EU:CRD:13",
+          "EU:CRD:9",
+          "EU:CRD:10",
+          "EU:CRD:6",
+          "FR:C. conso:L221-23",
+          "EU:CRD:16",
+          "EU:CRD:8",
+          "EU:CRD:18",
+          "EU:CRD:11"
+        ],
+        "q31": [
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-13",
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-1",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-9",
+          "FR:C. conso:L221-26-1",
+          "FR:C. conso:L221-2",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-12"
+        ],
+        "q32": [
+          "DE:BGB:1878",
+          "DE:BGB:622",
+          "DE:BGB:247",
+          "DE:BGB:971",
+          "DE:BGB:628",
+          "DE:BGB:1612a",
+          "DE:BGB:650m",
+          "DE:BGB:653",
+          "DE:BGB:652",
+          "DE:BGB:557b"
+        ],
+        "q33": [
+          "EU:GDPR:83",
+          "EU:GDPR:4",
+          "EU:CRD:5",
+          "EU:CRD:6",
+          "EU:GDPR:47",
+          "EU:GDPR:70",
+          "EU:GDPR:58",
+          "EU:GDPR:49",
+          "EU:GDPR:5",
+          "EU:CRD:32"
+        ],
+        "q34": [
+          "FR:C. conso:L221-10",
+          "FR:C. conso:L221-19",
+          "FR:C. conso:L221-18",
+          "FR:C. conso:L221-20",
+          "FR:C. conso:L221-5",
+          "FR:C. conso:L221-28",
+          "FR:C. conso:L221-21",
+          "FR:C. conso:L221-23",
+          "FR:C. conso:L221-13",
+          "FR:C. conso:L221-9"
+        ]
+      },
+      "top_score": {
+        "q01": 0.9837368130683899,
+        "q02": 0.9987336993217468,
+        "q03": 0.9265214800834656,
+        "q04": 0.9380564093589783,
+        "q05": 0.9946414232254028,
+        "q06": 0.6120275855064392,
+        "q07": 0.9141241312026978,
+        "q08": 0.8468659520149231,
+        "q09": 0.9007177948951721,
+        "q10": 0.7102876305580139,
+        "q11": 0.9030007719993591,
+        "q12": 0.991192638874054,
+        "q13": 0.42471104860305786,
+        "q14": 0.9988049268722534,
+        "q15": 0.9547513723373413,
+        "q16": 0.9499005675315857,
+        "q17": 0.8602731823921204,
+        "q18": 0.459565132856369,
+        "q19": 0.5842025876045227,
+        "q20": 0.004421378951519728,
+        "q21": 0.0011356333270668983,
+        "q22": 0.2554762363433838,
+        "q23": 0.11399389058351517,
+        "q24": 0.5513771176338196,
+        "q25": 0.9993234872817993,
+        "q26": 0.9940912127494812,
+        "q27": 0.5386749505996704,
+        "q28": 0.977514922618866,
+        "q29": 0.9932820796966553,
+        "q30": 0.995332658290863,
+        "q31": 0.007547823246568441,
+        "q32": 0.0017705796053633094,
+        "q33": 0.007470416370779276,
+        "q34": 0.1172061488032341
+      }
+    }
+  }
+}

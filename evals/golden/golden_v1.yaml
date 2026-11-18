@@ -1,0 +1,218 @@
+# Golden set v1. DRAFT by the agent, labels to be reviewed by Riadh (status below).
+# qrels grade: 2 = answers the question, 1 = related/useful. Keys are language-independent article keys.
+# scope = jurisdictions the caller is entitled to (server-side filter).
+version: 1
+status: draft-needs-human-review
+queries:
+  # ---------- exact references (identifier must be findable by BM25) ----------
+  - id: q01
+    query: "article L. 221-18 code de la consommation"
+    language: fr
+    scope: [FR]
+    type: exact_ref
+    qrels: {"FR:C. conso:L221-18": 2}
+  - id: q02
+    query: "Art. 17 DSGVO Recht auf Löschung"
+    language: de
+    scope: [EU]
+    type: exact_ref
+    qrels: {"EU:GDPR:17": 2}
+  - id: q03
+    query: "§ 355 BGB"
+    language: de
+    scope: [DE]
+    type: exact_ref
+    qrels: {"DE:BGB:355": 2}
+  - id: q04
+    query: "Article 9 of the Consumer Rights Directive"
+    language: en
+    scope: [EU]
+    type: exact_ref
+    qrels: {"EU:CRD:9": 2}
+  - id: q05
+    query: "article 33 RGPD notification de violation"
+    language: fr
+    scope: [EU]
+    type: exact_ref
+    qrels: {"EU:GDPR:33": 2, "EU:GDPR:34": 1}
+  - id: q06
+    query: "§ 312j BGB Button-Lösung"
+    language: de
+    scope: [DE]
+    type: exact_ref
+    qrels: {"DE:BGB:312j": 2}
+
+  # ---------- paraphrases, same language as the corpus ----------
+  - id: q07
+    query: "combien de jours a le consommateur pour se rétracter après un achat en ligne ?"
+    language: fr
+    scope: [FR]
+    type: paraphrase
+    qrels: {"FR:C. conso:L221-18": 2, "FR:C. conso:L221-20": 1, "FR:C. conso:L221-19": 1}
+  - id: q08
+    query: "le vendeur doit me rembourser sous quel délai après ma rétractation ?"
+    language: fr
+    scope: [FR]
+    type: paraphrase
+    qrels: {"FR:C. conso:L221-24": 2, "FR:C. conso:L221-23": 1}
+  - id: q09
+    query: "dans quels cas le droit de rétractation est-il exclu ?"
+    language: fr
+    scope: [FR]
+    type: paraphrase
+    qrels: {"FR:C. conso:L221-28": 2, "FR:C. conso:L221-2": 1}
+  - id: q10
+    query: "le professionnel ne m'a pas informé de mon droit de rétractation, que se passe-t-il ?"
+    language: fr
+    scope: [FR]
+    type: paraphrase
+    qrels: {"FR:C. conso:L221-20": 2, "FR:C. conso:L221-5": 1}
+  - id: q11
+    query: "Wann muss der Unternehmer nach einem Widerruf den Kaufpreis zurückzahlen?"
+    language: de
+    scope: [DE]
+    type: paraphrase
+    qrels: {"DE:BGB:357": 2, "DE:BGB:355": 1}
+  - id: q12
+    query: "Ab wann beginnt die Widerrufsfrist bei einem Fernabsatzvertrag über Waren?"
+    language: de
+    scope: [DE]
+    type: paraphrase
+    qrels: {"DE:BGB:356": 2, "DE:BGB:355": 1}
+  - id: q13
+    query: "Muss ein Online-Shop eine Schaltfläche zum Widerrufen anbieten?"
+    language: de
+    scope: [DE]
+    type: paraphrase
+    qrels: {"DE:BGB:356a": 2, "DE:BGB:312k": 1}
+  - id: q14
+    query: "within how many hours must a controller notify a personal data breach to the authority?"
+    language: en
+    scope: [EU]
+    type: paraphrase
+    qrels: {"EU:GDPR:33": 2, "EU:GDPR:34": 1}
+  - id: q15
+    query: "from what age can a child consent alone to an online service processing their data?"
+    language: en
+    scope: [EU]
+    type: paraphrase
+    qrels: {"EU:GDPR:8": 2, "EU:GDPR:7": 1}
+  - id: q16
+    query: "can I get a copy of my personal data in a machine-readable format to move it to another provider?"
+    language: en
+    scope: [EU]
+    type: paraphrase
+    qrels: {"EU:GDPR:20": 2, "EU:GDPR:15": 1}
+  - id: q17
+    query: "maximum administrative fine for infringing the data protection rules"
+    language: en
+    scope: [EU]
+    type: paraphrase
+    qrels: {"EU:GDPR:83": 2, "EU:GDPR:84": 1}
+  - id: q18
+    query: "is a trader allowed to charge a surcharge for paying by credit card?"
+    language: en
+    scope: [EU]
+    type: paraphrase
+    qrels: {"EU:CRD:19": 2}
+
+  # ---------- cross-lingual: query language differs from the relevant text ----------
+  - id: q19
+    query: "how long is the withdrawal period for distance contracts in France?"
+    language: en
+    scope: [FR]
+    type: cross_lingual
+    qrels: {"FR:C. conso:L221-18": 2, "FR:C. conso:L221-20": 1}
+  - id: q20
+    query: "délai de remboursement après rétractation en droit allemand"
+    language: fr
+    scope: [DE]
+    type: cross_lingual
+    qrels: {"DE:BGB:357": 2, "DE:BGB:355": 1}
+  - id: q21
+    query: "Ausnahmen vom Widerrufsrecht für versiegelte Waren"
+    language: de
+    scope: [FR]
+    type: cross_lingual
+    qrels: {"FR:C. conso:L221-28": 2}
+  - id: q22
+    query: "what must the website show right before the consumer places an order and pays?"
+    language: en
+    scope: [DE]
+    type: cross_lingual
+    qrels: {"DE:BGB:312j": 2, "DE:BGB:312i": 1, "DE:BGB:312d": 1}
+  - id: q23
+    query: "est-ce que le vendeur a le droit d'envoyer des produits non commandés et me les facturer ?"
+    language: fr
+    scope: [DE]
+    type: cross_lingual
+    qrels: {"DE:BGB:241a": 2}
+    note: "BGB § 241a (unbestellte Leistungen); verify label against the corpus"
+  - id: q24
+    query: "who bears the risk if goods are damaged during delivery to the consumer?"
+    language: en
+    scope: [DE]
+    type: cross_lingual
+    qrels: {"DE:BGB:475": 2, "DE:BGB:447": 1}
+    note: "Verbrauchsgüterkauf: § 475(2) excludes § 447; verify labels against the corpus"
+
+  # ---------- multi-jurisdiction (entitled to several, comparative) ----------
+  - id: q25
+    query: "délai de rétractation contrat à distance"
+    language: fr
+    scope: [EU, FR]
+    type: multi_jurisdiction
+    qrels: {"EU:CRD:9": 2, "FR:C. conso:L221-18": 2, "EU:CRD:10": 1, "FR:C. conso:L221-20": 1}
+  - id: q26
+    query: "Widerrufsfrist 14 Tage Fernabsatz"
+    language: de
+    scope: [EU, DE]
+    type: multi_jurisdiction
+    qrels: {"EU:CRD:9": 2, "DE:BGB:355": 2, "DE:BGB:356": 1, "EU:CRD:10": 1}
+  - id: q27
+    query: "refund deadline after withdrawal"
+    language: en
+    scope: [EU, FR, DE]
+    type: multi_jurisdiction
+    qrels: {"EU:CRD:13": 2, "FR:C. conso:L221-24": 2, "DE:BGB:357": 2}
+  - id: q28
+    query: "exceptions to the right of withdrawal for personalised goods"
+    language: en
+    scope: [EU, FR, DE]
+    type: multi_jurisdiction
+    qrels: {"EU:CRD:16": 2, "FR:C. conso:L221-28": 2, "DE:BGB:312g": 2}
+  - id: q29
+    query: "informations précontractuelles à fournir avant un contrat à distance"
+    language: fr
+    scope: [EU, FR, DE]
+    type: multi_jurisdiction
+    qrels: {"EU:CRD:6": 2, "FR:C. conso:L221-5": 2, "DE:BGB:312d": 2, "EU:CRD:8": 1, "FR:C. conso:L221-11": 1}
+  - id: q30
+    query: "consumer must send the goods back within 14 days after withdrawing"
+    language: en
+    scope: [EU, FR]
+    type: multi_jurisdiction
+    qrels: {"EU:CRD:14": 2, "FR:C. conso:L221-23": 2}
+
+  # ---------- no-answer (nothing in the entitled corpus answers; used for the abstention sweep) ----------
+  - id: q31
+    query: "durée de la garantie légale de conformité pour un smartphone"
+    language: fr
+    scope: [FR]
+    type: no_answer
+    note: "L217-x is not in the corpus (only L221-x)"
+  - id: q32
+    query: "Mindestlohn pro Stunde in Deutschland"
+    language: de
+    scope: [DE]
+    type: no_answer
+  - id: q33
+    query: "what is the corporate income tax rate in the EU?"
+    language: en
+    scope: [EU]
+    type: no_answer
+  - id: q34
+    query: "délai de préavis pour résilier un bail d'habitation"
+    language: fr
+    scope: [FR]
+    type: no_answer

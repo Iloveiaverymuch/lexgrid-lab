@@ -27,7 +27,7 @@ def test_eurlex_en_structure() -> None:
     joined = " ".join(art17.paragraphs)
     assert "(a) the personal data are no longer necessary;" in joined
     assert joined.count("nested point") == 1  # nested rows not duplicated
-    assert "Recital" not in joined and "Annex" not in joined
+    assert "Recital" not in joined and "Annex" not in joined and "Footnote" not in joined
     assert doc.title.startswith("REGULATION (EU) 2016/679")
 
 

@@ -20,6 +20,10 @@
 | Ingest (SQLite default) | `uv run lexgrid ingest` (`--dry-run` writes nothing) |
 | Ingest into Postgres | `docker compose -f infra/docker-compose.yml up -d --wait` then `LEXGRID_DB=postgresql+psycopg://lexgrid:lexgrid@localhost:5432/lexgrid uv run lexgrid ingest` |
 | Lineage of a chunk | `uv run lexgrid lineage <chunk_id>` |
+| Local models (Mac) | `uv sync --extra ml` |
+| Embed corpus (cached) | `uv run lexgrid embed --model e5` · Titan (paid, explicit): `--model titan --aws-profile lexgrid` |
+| Build + promote indexes | `uv run lexgrid index build --models e5,titan --promote` · `index status` · `index rollback --jurisdiction FR` |
+| Retrieval eval | `uv run lexgrid eval --embedder e5 --reranker bge-m3 --warmup --run-id <ID> --record "<conclusion>"` |
 
 ## Session protocol
 - **Start:** read this file, [docs/STATE.md](docs/STATE.md), `git status`; run verify; report the baseline.

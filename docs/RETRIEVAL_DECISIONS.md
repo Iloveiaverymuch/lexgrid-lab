@@ -1,0 +1,16 @@
+# Retrieval decisions
+
+Status: ACTIVE · Last updated: 2026-11-18 · Next action: reduce rerank latency; weighted RRF experiment
+
+Each decision states the rule, why, and the evidence (results file / test). Numbers only from [FINDINGS](../evals/FINDINGS.md).
+
+| # | Decision | Why | Evidence |
+|---|---|---|---|
+| R1 | Chunk = one article; split only long articles (≤ 450 est. tokens, 1-sentence overlap); header `act > path > Article N — heading` inside the text | Legal answers are cited per article; the identifier must be in the indexed text | `test_article_number_is_in_every_chunk_text`, D1-INGEST-03 |
+| R2 | Explicit references in a query (`L. 221-18`, `Art. 17`, `§ 355`) are canonicalised, appended to the lexical query, and the matching articles are pinned first in lexical/hybrid modes (not in pure dense) | Users type `L. 221-18`, the index holds `L221-18`; a lawyer typing an article number expects that article first. Offline: exact-ref hit@1 went from 4/6 to 6/6 | `test_exact_reference_queries_rank_first` |
+| R3 | Hybrid = client-side RRF (k = 60) over top-50 BM25 + top-50 kNN | Rank-based, no score normalisation between BM25 and cosine; portable across backends. Alternative: OpenSearch search pipeline with score-ranker processor (keeps fusion server-side). Known weakness: with bge-m3, equal-weight RRF is slightly below dense alone (0.733 vs 0.759) because BM25 is weak on cross-lingual queries | D2-EVAL-BGEM3-01, D2-TYPES-01 |
+| R4 | Rerank the top 30 fused candidates with a local multilingual cross-encoder (bge-reranker-v2-m3); Bedrock Rerank blocked on the Free plan (backlog #7) | +0.110 to +0.173 nDCG@10 over hybrid; cost ~2.5–3.0 s p50 on a laptop GPU (too slow for interactive use as is) | D2-EVAL-E5-01, D2-EVAL-BGEM3-01, [ADR-001](adr/ADR-001-open-source-embeddings-and-reranker.md) |
+| R5 | Results are collapsed to one hit per `article_key` before metrics and before context assembly | Parts of one article and the same EU article in 3 languages must not fill the top-k | `test_collapse_dedups_languages_of_same_eu_article` |
+| R6 | Scope: entitled jurisdictions decide which aliases are queried (`legal-<cc>-current`), and a `terms` filter repeats it | Defence in depth: a wrong filter cannot reach another country's index | `test_scope_is_never_widened`, `test_backend_targets_only_entitled_aliases_and_filters` |
+| R7 | Metrics at article level: relevant = grade ≥ 1; nDCG uses gains 2^g − 1; 95% percentile bootstrap CIs (2,000 resamples, seed 13); paired bootstrap on nDCG@10 and exact McNemar on hit@5 vs BM25 | Small golden set (30 answerable): CIs are wide and must be shown | `tests/test_metrics.py` |
+| R8 | Default embedder **BAAI/bge-m3**; default mode **hybrid_rrf_rerank** for quality, **hybrid_rrf** when latency matters | Best measured nDCG@10 (0.843); hybrid keeps exact references at 0.99 where dense alone drops to ~0.5 | D2-CMP-01, D2-TYPES-01, ADR-001 |

@@ -16,6 +16,7 @@ _ART_SUB = {"sti-art", "oj-sti-art"}
 _SEC_LABEL = {"ti-section-1", "oj-ti-section-1"}
 _SEC_TITLE = {"ti-section-2", "oj-ti-section-2"}
 _DOC_TITLE = {"doc-ti", "oj-doc-ti"}
+_NOTE = {"note", "oj-note"}
 _CHAPTER = re.compile(r"^(chapter|chapitre|kapitel|title|titre|titel)\b", re.IGNORECASE)
 _QUOTES = set("„“”‘’\"«»'")
 _ANNEX = re.compile(r"^(annex|annexe|anhang)\b", re.IGNORECASE)
@@ -30,7 +31,7 @@ def _classes(el: Tag) -> set[str]:
 
 class EurLexHtmlParser:
     name = "eurlex_html"
-    version = "1.0.0"
+    version = "1.1.0"
 
     def parse(self, raw: bytes, *, source: Source, language: str) -> NormalizedDocument:
         soup = BeautifulSoup(raw, "lxml")
@@ -54,6 +55,10 @@ class EurLexHtmlParser:
             if not text:
                 continue
 
+            if cls & _NOTE:
+                continue  # footnotes (OJ references), not normative text
+            if articles and cls & _DOC_TITLE:
+                break  # a new document title after the articles = annexes start
             if cls & _SEC_LABEL:
                 if _ANNEX.match(text):
                     break  # annexes are out of scope for article chunking
