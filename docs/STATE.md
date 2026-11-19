@@ -1,8 +1,8 @@
 # STATE
 
-Status: ACTIVE · Last updated: 2026-11-18 · Next action: rehearse demo (API live), commit Day 3, Riadh reviews golden labels
+Status: ACTIVE · Last updated: 2026-11-18 · Next action: generate real screenshots, push, send to recruiter; then AWS tracing (approval needed)
 
-**Current:** Day 3 DONE: gate pass/reject live (D3-GATE-01/02), abstention t=0.15 (D3-ABSTAIN-01). Retrieval: Best: bge-m3 hybrid+rerank nDCG@10 0.843 [0.76, 0.92] (FINDINGS D2-EVAL-BGEM3-01). See [LAB_PLAN.md](LAB_PLAN.md).
+**Current:** Day 3+ DONE: demo console, jurisdiction diversification (D4-CMP-01), CI retrieval gate. Best: bge-m3 hybrid+rerank nDCG@10 0.860 [0.79, 0.93] (D4-EVAL-DIVERSIFY-01).
 
 ## Next 3 actions
 1. Rehearse docs/DEMO_15MIN.md with `lexgrid serve` live; commit Day 3.
@@ -15,9 +15,9 @@ Status: ACTIVE · Last updated: 2026-11-18 · Next action: rehearse demo (API li
 - No Docker in the agent shell: OpenSearch/Postgres integration runs on the Mac only.
 
 ## Last 3 decisions
+- Per-jurisdiction retrieval + diversification is the default (R11); side effect kept visible (backlog #9).
 - ADR-001: open-source models (bge-m3 + bge-reranker-v2-m3) because the Free plan blocks Bedrock and a paid plan is not justified.
 - Golden v1 metrics are on agent-drafted labels until Riadh's review; rerun after any label change.
-- 3-day scope: Go, Kafka, Airflow, Redis, K8S, PDF/email moved to roadmap (LAB_PLAN §Cut).
 
 ## Verified numbers
 - Corpus: 3,224 live chunks, 4 sources, parser 1.1.0; re-run no-op ([FINDINGS](../evals/FINDINGS.md) D2-INGEST-05).

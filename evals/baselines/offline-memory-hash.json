@@ -1,0 +1,13 @@
+{
+  "modes": {
+    "bm25": 0.4922,
+    "dense": 0.17,
+    "hybrid_rrf": 0.4114,
+    "hybrid_rrf_rerank": 0.4513
+  },
+  "exact_ref_hit1": {
+    "bm25": 1.0,
+    "hybrid_rrf": 1.0,
+    "hybrid_rrf_rerank": 1.0
+  }
+}

@@ -30,7 +30,7 @@ def _hit(c: Mapping[str, Any], score: float) -> Hit:
         language=c["language"],
         chunk_path=c["chunk_path"],
         text=c["text"],
-        score=score,
+        score=float(score),
         valid_from=c.get("valid_from"),
         valid_to=c.get("valid_to"),
     )

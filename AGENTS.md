@@ -27,6 +27,9 @@
 | Abstention threshold | `uv run lexgrid abstain-sweep --results evals/results/<run>.json` |
 | REST API + demo console | `LEXGRID_API_KEYS="dev-fr:FR;dev-all:EU,FR,DE" uv run lexgrid serve` → http://127.0.0.1:8000/ |
 | MCP (stdio) | `LEXGRID_API_KEYS=... LEXGRID_MCP_KEY=dev-fr uv run lexgrid mcp` |
+| Before/after comparison | `uv run lexgrid compare-runs --before evals/results/A.json --after evals/results/B.json` |
+| README screenshots (server running) | `uv run --with playwright python scripts/screenshots.py` |
+| CI retrieval gate (offline) | `uv run lexgrid eval --backend memory --embedder hash --reranker overlap --run-id CI-OFFLINE --out-dir /tmp/ci && uv run python scripts/eval_gate.py --results /tmp/ci/CI-OFFLINE.json` (`--update` to accept new numbers, review the diff) |
 | Retrieval eval | `uv run lexgrid eval --embedder e5 --reranker bge-m3 --warmup --run-id <ID> --record "<conclusion>"` |
 
 ## Session protocol

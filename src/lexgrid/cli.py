@@ -181,7 +181,14 @@ def cmd_eval(args: argparse.Namespace) -> int:
         from lexgrid.retrieval.opensearch import OpenSearchBackend, make_client
 
         backend = OpenSearchBackend(make_client(args.opensearch))
-    service = RetrievalService(backend, emb, reranker, candidates=args.candidates, rerank_top=args.rerank_top)
+    service = RetrievalService(
+        backend,
+        emb,
+        reranker,
+        candidates=args.candidates,
+        rerank_top=args.rerank_top,
+        diversify_jurisdictions=not args.no_diversify,
+    )
     if args.warmup:
         for m in modes:  # load models / JIT once so latency numbers are steady-state
             run_mode(service, queries[:2], m)
@@ -195,9 +202,11 @@ def cmd_eval(args: argparse.Namespace) -> int:
         "modes": modes,
         "candidates": args.candidates,
         "rerank_top": args.rerank_top,
+        "diversify_jurisdictions": not args.no_diversify,
         "golden": args.golden,
     }
-    path = write_results(ROOT / "evals" / "results", run_id, config, results, summary)
+    out_dir = Path(args.out_dir) if args.out_dir else ROOT / "evals" / "results"
+    path = write_results(out_dir, run_id, config, results, summary)
     print(markdown_table(summary))
     for name, comp in summary.get("comparisons", {}).items():
         pb = comp["ndcg@10_paired_bootstrap"]
@@ -207,7 +216,7 @@ def cmd_eval(args: argparse.Namespace) -> int:
             f"p={pb['p']:.3f}; "
             f"hit@5 McNemar n01={mc['n01']} n10={mc['n10']} p={mc['p']:.3f}"
         )
-    print(f"results: {path.relative_to(ROOT)}")
+    print(f"results: {path}")
     if args.record:
         cfg = f"{args.backend}, {emb.model_id}, rerank={config['reranker']}, golden v1"
         row = findings_row(run_id, cfg, summary, args.record)
@@ -273,6 +282,32 @@ def cmd_abstain_sweep(args: argparse.Namespace) -> int:
         f"chosen t={best.threshold:.2f}: abstains on {best.no_answer_abstain:.0%} of {n_na} no-answer, "
         f"answers {best.answerable_answered:.0%} of {n_ans} answerable, hit@1 when answering {best.answered_hit1:.0%}"
     )
+    return 0
+
+
+def cmd_compare_runs(args: argparse.Namespace) -> int:
+    """Paired before/after on two results files of the same golden set: per mode, overall and per query type."""
+    from lexgrid.evals.runner import load_golden
+    from lexgrid.evals.stats import paired_bootstrap
+
+    a = json.loads(Path(args.before).read_text(encoding="utf-8"))
+    b = json.loads(Path(args.after).read_text(encoding="utf-8"))
+    types = {q.id: q.type for q in load_golden(Path(args.golden)) if q.type != "no_answer"}
+    metric = args.metric
+    print(f"{metric}: {a['run_id']} (before) -> {b['run_id']} (after), paired by query")
+    print("| mode | query type | n | before | after | diff [95% CI] |\n|---|---|---|---|---|---|")
+    for mode in [m for m in a["per_query"] if m in b["per_query"]]:
+        pa, pb = a["per_query"][mode]["metrics"], b["per_query"][mode]["metrics"]
+        groups = [("all", sorted(set(pa) & set(pb) & set(types)))]
+        groups += [(t, sorted(q for q in groups[0][1] if types[q] == t)) for t in sorted(set(types.values()))]
+        for name, ids in groups:
+            if not ids:
+                continue
+            x, y = [pa[q][metric] for q in ids], [pb[q][metric] for q in ids]
+            r = paired_bootstrap(x, y)
+            mx, my = sum(x) / len(x), sum(y) / len(y)
+            ci = f"[{r['ci_low']:+.2f}, {r['ci_high']:+.2f}]"
+            print(f"| {mode} | {name} | {len(ids)} | {mx:.3f} | {my:.3f} | {r['diff']:+.3f} {ci} |")
     return 0
 
 
@@ -379,6 +414,13 @@ def main(argv: list[str] | None = None) -> int:
     sw.add_argument("--golden", default=str(ROOT / "evals" / "golden" / "golden_v1.yaml"))
     sw.set_defaults(func=cmd_abstain_sweep)
 
+    cr = sub.add_parser("compare-runs", help="paired before/after comparison of two eval results files")
+    cr.add_argument("--before", required=True)
+    cr.add_argument("--after", required=True)
+    cr.add_argument("--metric", default="ndcg@10")
+    cr.add_argument("--golden", default=str(ROOT / "evals" / "golden" / "golden_v1.yaml"))
+    cr.set_defaults(func=cmd_compare_runs)
+
     sv = sub.add_parser("serve", help="REST API (/search, /ask, /lineage)")
     sv.add_argument("--host", default="127.0.0.1")
     sv.add_argument("--port", type=int, default=8000)
@@ -397,6 +439,8 @@ def main(argv: list[str] | None = None) -> int:
     ev.add_argument("--rerank-top", type=int, default=30)
     ev.add_argument("--run-id")
     ev.add_argument("--warmup", action="store_true")
+    ev.add_argument("--out-dir", help="where to write the results JSON (default evals/results)")
+    ev.add_argument("--no-diversify", action="store_true", help="single merged ranking across jurisdictions (before)")
     ev.add_argument("--record", metavar="CONCLUSION", help="append a FINDINGS row with this conclusion")
     common(ev)
     ev.set_defaults(func=cmd_eval)

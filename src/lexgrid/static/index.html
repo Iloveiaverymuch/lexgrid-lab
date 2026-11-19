@@ -99,6 +99,7 @@ section[hidden] { display: none; }
 .compare ol { list-style: none; margin: 0; padding: 0; }
 .compare li { display: grid; grid-template-columns: 1.6rem 1fr; gap: 0.4rem; padding: 0.35rem 0.3rem; border-bottom: 1px solid var(--rule); cursor: default; font-size: 0.88rem; line-height: 1.3; }
 .compare li .n { color: var(--muted); text-align: right; }
+.compare > div, .compare li > span { min-width: 0; }  /* let long section names shrink instead of overflowing */
 .compare li .t { display: block; color: var(--muted); font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .compare li.rel { box-shadow: inset 3px 0 0 var(--ink); }
 .compare.linking li { opacity: 0.35; }
@@ -377,9 +378,14 @@ async function runSearch() {
   try {
     if (state.mode === "compare") {
       const modes = Object.keys(MODE_NAMES);
-      const results = await Promise.all(modes.map((m) => api("/search", searchBody(m, 10))));
+      // One after another, not in parallel: concurrent searches compete for the same GPU and inflate the timings.
+      const results = [];
+      for (const [i, m] of modes.entries()) {
+        $("searchstatus").textContent = `Ranking ${i + 1} of ${modes.length}: ${MODE_NAMES[m]}…`;
+        results.push(await api("/search", searchBody(m, 10)));
+      }
       renderCompare(modes, results);
-      $("searchstatus").textContent = `Scope: ${results[0].scope.join(", ")}`;
+      $("searchstatus").textContent = `Scope: ${results[0].scope.join(", ")}. Rankings run one after another, so each timing is its own.`;
     } else {
       const res = await api("/search", searchBody(state.mode, 8));
       renderHits(res);
@@ -418,18 +424,24 @@ function renderHits(res) {
 }
 function renderCompare(modes, results) {
   const grid = h("div", { class: "compare" });
-  const link = (key, on) => {
-    grid.classList.toggle("linking", on);
-    for (const li of grid.querySelectorAll("li")) li.classList.toggle("lit", on && li.dataset.key === key);
+  let current = null;
+  const link = (key) => {
+    if (key === current) return;  // moving within the same article: no repaint, no flicker
+    current = key;
+    grid.classList.toggle("linking", key !== null);
+    for (const li of grid.querySelectorAll("li")) li.classList.toggle("lit", key !== null && li.dataset.key === key);
   };
+  // One listener on the grid: moving between rows switches the highlight without ever clearing it.
+  grid.addEventListener("mouseover", (e) => { const li = e.target.closest("li"); if (li) link(li.dataset.key); });
+  grid.addEventListener("mouseleave", () => link(null));
+  grid.addEventListener("focusin", (e) => { const li = e.target.closest("li"); if (li) link(li.dataset.key); });
+  grid.addEventListener("focusout", (e) => { if (!grid.contains(e.relatedTarget)) link(null); });
   modes.forEach((m, idx) => {
     const res = results[idx];
     const ol = h("ol", {});
     res.hits.forEach((hit, i) => {
       const c = splitChunk(hit.text);
-      ol.append(h("li", { "data-key": hit.article_key, tabindex: "0",
-        onmouseenter: () => link(hit.article_key, true), onmouseleave: () => link(null, false),
-        onfocus: () => link(hit.article_key, true), onblur: () => link(null, false) },
+      ol.append(h("li", { "data-key": hit.article_key, tabindex: "0", title: c.path },
         h("span", { class: "n" }, i + 1),
         h("span", {}, h("span", { class: `cite ${hit.jurisdiction}` }, hit.article_key.replace(/^(EU|FR|DE):/, "")),
           h("span", { class: "t", title: c.path }, c.path.split(" › ").slice(-1)[0] || c.title))));

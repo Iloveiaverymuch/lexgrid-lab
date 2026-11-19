@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BUDGET_S = 60.0
 STATE_MAX_LINES = 40
 DOC_GLOBS = ["README.md", "AGENTS.md", "docs/**/*.md", "evals/**/*.md", ".agents/**/*.md"]
+_RUN_ID = re.compile(r"\b(D\d-[A-Z0-9]+(?:-[A-Z0-9]+)*-\d{2})\b")
 _LINK = re.compile(r"\]\((?!https?://|mailto:|#)([^)\s]+)\)")
 
 
@@ -46,6 +47,12 @@ def docs_check() -> bool:
             path = target.split("#", 1)[0]
             if path and not (f.parent / path).exists():
                 problems.append(f"{f.relative_to(ROOT)}: dead link {target}")
+    # Every run id cited in the README must exist in FINDINGS (numbers shown must be backed by a results row).
+    findings = (ROOT / "evals" / "FINDINGS.md").read_text(encoding="utf-8")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    for run_id in sorted(set(_RUN_ID.findall(readme))):
+        if f"| {run_id} |" not in findings:
+            problems.append(f"README.md: run id {run_id} not found in evals/FINDINGS.md")
     state = ROOT / "docs" / "STATE.md"
     if state.exists() and len(state.read_text(encoding="utf-8").splitlines()) > STATE_MAX_LINES:
         problems.append(f"docs/STATE.md exceeds {STATE_MAX_LINES} lines")

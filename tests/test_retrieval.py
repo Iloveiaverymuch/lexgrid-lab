@@ -136,3 +136,48 @@ def test_embedding_cache_only_pays_for_misses(tmp_path: Path) -> None:
     assert (a[1] == b[0]).all()
     emb.embed(["alpha"], "query")  # query and passage vectors are cached separately
     assert emb.misses == 3
+
+
+DIVERSE = [
+    chunk("e1", "EU:CRD:16", "16", "EU", "en", "Article 16 exceptions right of withdrawal personalised goods"),
+    chunk("e2", "EU:CRD:9", "9", "EU", "en", "Article 9 right of withdrawal personalised period"),
+    chunk("e3", "EU:CRD:14", "14", "EU", "en", "Article 14 withdrawal goods obligations"),
+    chunk("e4", "EU:CRD:6", "6", "EU", "en", "Article 6 information withdrawal goods"),
+    chunk("f1", "FR:C:L221-28", "L221-28", "FR", "fr", "Article L221-28 biens nettement personnalisés exception"),
+    chunk("d1", "DE:BGB:312g", "312g", "DE", "de", "§ 312g Widerrufsrecht Ausnahmen Waren"),
+]
+
+
+def _svc(diversify: bool) -> RetrievalService:
+    emb = HashEmbedder()
+    vecs = emb.embed([c["text"] for c in DIVERSE], "passage")
+    return RetrievalService(
+        MemoryBackend(DIVERSE, {"vec_hash": vecs}), emb, OverlapReranker(), diversify_jurisdictions=diversify
+    )
+
+
+@pytest.mark.parametrize("mode", ["dense", "hybrid_rrf", "hybrid_rrf_rerank"])
+def test_every_jurisdiction_in_scope_gets_a_top_slot(mode: str) -> None:
+    scope = Filters(("EU", "FR", "DE"))
+    query = "exceptions to the right of withdrawal for personalised goods"
+    after = [h.jurisdiction for h in _svc(True).search(query, scope, k=3, mode=mode).hits]  # type: ignore[arg-type]
+    assert set(after) == {"EU", "FR", "DE"}, after
+    if mode != "dense":  # lexical evidence favours the English EU texts without diversification
+        before = [h.jurisdiction for h in _svc(False).search(query, scope, k=3, mode=mode).hits]  # type: ignore[arg-type]
+        assert set(before) == {"EU"}, before
+
+
+def test_diversification_never_invents_results() -> None:
+    """Keyword mode: French and German texts share no word with the query, so nothing is shown for them."""
+    hits = _svc(True).search("exceptions to the right of withdrawal", Filters(("EU", "FR", "DE")), mode="bm25").hits
+    assert {h.jurisdiction for h in hits} == {"EU"} and all(h.score > 0 for h in hits)
+
+
+def test_diversification_keeps_named_article_first_and_single_scope_unchanged() -> None:
+    svc = _svc(True)
+    res = svc.search("article L. 221-28 exceptions withdrawal", Filters(("EU", "FR", "DE")), k=5, mode="hybrid_rrf")
+    assert res.hits[0].article_key == "FR:C:L221-28"
+    one = Filters(("EU",))
+    a = [h.chunk_id for h in _svc(True).search("withdrawal goods", one, mode="hybrid_rrf").hits]
+    b = [h.chunk_id for h in _svc(False).search("withdrawal goods", one, mode="hybrid_rrf").hits]
+    assert a == b

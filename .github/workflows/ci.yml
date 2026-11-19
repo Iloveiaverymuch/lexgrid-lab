@@ -3,12 +3,48 @@ on:
   pull_request:
   push:
     branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   verify:
+    name: Lint, types, tests, docs (offline)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
       - run: uv sync --frozen
       - run: uv run scripts/verify.py
+
+  retrieval-gate:
+    name: Offline retrieval regression gate
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      LEXGRID_DB: sqlite:///var/ci.db
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --frozen
+      - name: Ingest pinned corpus
+        run: mkdir -p var && uv run lexgrid ingest | tail -1
+      - name: Evaluate golden set (in-memory BM25, hash embedder, overlap reranker)
+        run: uv run lexgrid eval --backend memory --embedder hash --reranker overlap --run-id CI-OFFLINE --out-dir ci-results
+      - name: Compare with committed baseline
+        run: uv run python scripts/eval_gate.py --results ci-results/CI-OFFLINE.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: offline-eval
+          path: ci-results/
