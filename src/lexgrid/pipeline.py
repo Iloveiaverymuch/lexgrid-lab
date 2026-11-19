@@ -12,6 +12,7 @@ from pathlib import Path
 from lexgrid.chunking import chunk_document
 from lexgrid.parsers import PARSERS
 from lexgrid.registry import Source, load_manifest, sha256_bytes
+from lexgrid.screen import screen
 from lexgrid.store import LineageStore
 
 
@@ -25,6 +26,7 @@ class SourceReport:
     new_chunks: int = 0
     max_tokens: int = 0
     split_articles: int = 0
+    quarantined: int = 0
     languages: list[str] = field(default_factory=list)
 
 
@@ -80,7 +82,10 @@ def ingest(
             rep.chunks += len(chunks)
             rep.max_tokens = max([rep.max_tokens, *(c.token_count for c in chunks)])
             rep.split_articles += len({c.article_key for c in chunks if c.n_parts > 1})
+            flagged = {c.id: r for c in chunks if (r := screen(c.text))}
+            rep.quarantined += len(flagged)
             if store is not None and not dry_run:
-                rep.new_chunks += store.add_chunks(chunks)
+                rep.new_chunks += store.add_chunks(chunks)  # kept for lineage/audit...
+                store.quarantine(flagged)  # ...but never served or indexed
         reports.append(rep)
     return reports

@@ -11,9 +11,6 @@ import pytest
 
 from lexgrid.embed import HashEmbedder
 from lexgrid.evals.runner import load_golden, run_mode
-from lexgrid.parsers import PARSERS
-from lexgrid.pipeline import ingest
-from lexgrid.registry import load_registry
 from lexgrid.retrieval.memory import MemoryBackend
 from lexgrid.retrieval.service import RetrievalService
 from lexgrid.store import LineageStore
@@ -23,12 +20,8 @@ GOLDEN = REPO / "evals" / "golden" / "golden_v1.yaml"
 
 
 @pytest.fixture(scope="module")
-def chunks(tmp_path_factory: pytest.TempPathFactory) -> list[dict[str, object]]:
-    sources = load_registry(REPO / "data" / "sources.yaml", set(PARSERS))
-    db = tmp_path_factory.mktemp("db") / "lin.sqlite"
-    store = LineageStore.from_url(f"sqlite:///{db}")
-    ingest(sources, REPO / "data" / "fixtures", store)
-    return store.live_chunks()
+def chunks(real_store: LineageStore) -> list[dict[str, object]]:
+    return real_store.live_chunks()
 
 
 def test_golden_set_is_valid_and_labels_exist(chunks: list[dict[str, object]]) -> None:

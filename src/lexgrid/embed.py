@@ -72,18 +72,13 @@ class HashEmbedder:
 class SentenceTransformerEmbedder:
     """E5-family models need 'query: ' / 'passage: ' prefixes; we add them here, once."""
 
-    def __init__(
-        self, model_id: str = "intfloat/multilingual-e5-base", name: str = "e5", batch_size: int = 32
-    ):
+    def __init__(self, model_id: str = "intfloat/multilingual-e5-base", name: str = "e5", batch_size: int = 32):
         from sentence_transformers import SentenceTransformer  # lazy: heavy
 
         self.name = name
         self.model_id = model_id
         self._model = SentenceTransformer(model_id)
-        get_dim = (
-            getattr(self._model, "get_embedding_dimension", None)
-            or self._model.get_sentence_embedding_dimension
-        )
+        get_dim = getattr(self._model, "get_embedding_dimension", None) or self._model.get_sentence_embedding_dimension
         self.dim = int(get_dim() or 0)
         self._batch = batch_size
         self._e5 = "e5" in model_id.lower()
@@ -197,11 +192,7 @@ class CachedEmbedder:
             self.cache.put_many(self.model_id, kind, unique, vecs)
             self.misses += len(unique)
             hits.update({EmbeddingCache._sha(t): v for t, v in zip(unique, vecs, strict=True)})
-        return (
-            np.stack([hits[s] for s in shas]).astype(np.float32)
-            if texts
-            else np.zeros((0, self.dim), np.float32)
-        )
+        return np.stack([hits[s] for s in shas]).astype(np.float32) if texts else np.zeros((0, self.dim), np.float32)
 
 
 def build_embedder(name: str, *, cache_dir: Path | None = None, profile: str | None = None) -> Embedder:

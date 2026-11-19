@@ -28,9 +28,7 @@ def chunk(cid: str, key: str, num: str, jur: str, lang: str, text: str, **kw: An
 
 
 CHUNKS = [
-    chunk(
-        "c1", "FR:C:L221-18", "L221-18", "FR", "fr", "Article L221-18 délai de quatorze jours rétractation"
-    ),
+    chunk("c1", "FR:C:L221-18", "L221-18", "FR", "fr", "Article L221-18 délai de quatorze jours rétractation"),
     chunk(
         "c2",
         "FR:C:L221-21",
@@ -92,9 +90,7 @@ def test_filters_require_scope() -> None:
 
 @pytest.mark.parametrize("mode", ["bm25", "dense", "hybrid_rrf", "hybrid_rrf_rerank"])
 def test_scope_is_never_widened(service: RetrievalService, mode: str) -> None:
-    res = service.search(
-        "Widerrufsfrist 14 Tage délai rétractation", Filters(jurisdictions=("FR",)), mode=mode
-    )  # type: ignore[arg-type]
+    res = service.search("Widerrufsfrist 14 Tage délai rétractation", Filters(jurisdictions=("FR",)), mode=mode)  # type: ignore[arg-type]
     assert res.hits and all(h.jurisdiction == "FR" for h in res.hits)
 
 
@@ -104,9 +100,7 @@ def test_exact_reference_is_pinned_first(service: RetrievalService) -> None:
 
 
 def test_collapse_dedups_languages_of_same_eu_article(service: RetrievalService) -> None:
-    res = service.search(
-        "withdrawal 14 days rétractation quatorze jours", Filters(jurisdictions=("EU",)), mode="bm25"
-    )
+    res = service.search("withdrawal 14 days rétractation quatorze jours", Filters(jurisdictions=("EU",)), mode="bm25")
     assert [h.article_key for h in res.hits].count("EU:CRD:9") == 1
 
 
@@ -128,9 +122,7 @@ def test_as_of_filters_out_not_yet_in_force_and_repealed(service: RetrievalServi
 
 def test_rerank_mode_requires_reranker() -> None:
     emb = HashEmbedder()
-    svc = RetrievalService(
-        MemoryBackend(CHUNKS, {"vec_hash": emb.embed([c["text"] for c in CHUNKS], "passage")}), emb
-    )
+    svc = RetrievalService(MemoryBackend(CHUNKS, {"vec_hash": emb.embed([c["text"] for c in CHUNKS], "passage")}), emb)
     with pytest.raises(ValueError):
         svc.search("x", Filters(("FR",)), mode="hybrid_rrf_rerank")
 

@@ -10,6 +10,7 @@ from pathlib import Path
 import pytest
 
 from lexgrid.registry import Source
+from lexgrid.store import LineageStore
 
 SAMPLES = Path(__file__).parent / "samples"
 
@@ -49,3 +50,18 @@ def make_source(**overrides: object) -> Source:
     }
     base.update(overrides)
     return Source.model_validate(base)
+
+
+REPO = Path(__file__).resolve().parents[1]
+
+
+@pytest.fixture(scope="session")
+def real_store(tmp_path_factory: pytest.TempPathFactory) -> LineageStore:
+    """The pinned real corpus ingested once per test session (SQLite, offline)."""
+    from lexgrid.parsers import PARSERS
+    from lexgrid.pipeline import ingest
+    from lexgrid.registry import load_registry
+
+    store = LineageStore.from_url(f"sqlite:///{tmp_path_factory.mktemp('real') / 'lin.sqlite'}")
+    ingest(load_registry(REPO / "data" / "sources.yaml", set(PARSERS)), REPO / "data" / "fixtures", store)
+    return store

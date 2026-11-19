@@ -119,6 +119,14 @@ index_runs_t = Table(
     Column("promoted_at", DateTime(timezone=True), nullable=True),
 )
 
+quarantine_t = Table(
+    "quarantine",
+    metadata,
+    Column("chunk_id", String(64), ForeignKey("chunks.id"), primary_key=True),
+    Column("reasons", String, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+)
+
 eval_runs_t = Table(
     "eval_runs",
     metadata,
@@ -252,6 +260,20 @@ class LineageStore:
             inserted += self._insert_ignore(chunks_t, rows[i : i + 500], "id")
         return inserted
 
+    def quarantine(self, items: dict[str, list[str]]) -> int:
+        rows = [
+            {"chunk_id": cid, "reasons": ",".join(r), "created_at": datetime.now(tz=UTC)} for cid, r in items.items()
+        ]
+        return self._insert_ignore(quarantine_t, rows, "chunk_id")
+
+    def quarantined(self) -> dict[str, str]:
+        with self.engine.connect() as conn:
+            return {r.chunk_id: r.reasons for r in conn.execute(select(quarantine_t))}
+
+    def set_index_run_eval(self, run_id: str, eval_run_id: str) -> None:
+        with self.engine.begin() as conn:
+            conn.execute(update(index_runs_t).where(index_runs_t.c.run_id == run_id).values(eval_run_id=eval_run_id))
+
     def live_chunks(self, jurisdiction: str | None = None) -> list[dict[str, Any]]:
         """Chunks of non-superseded versions: what an index build should contain."""
         q = (
@@ -259,11 +281,16 @@ class LineageStore:
             .join(doc_versions_t, chunks_t.c.doc_version_id == doc_versions_t.c.id)
             .join(documents_t, doc_versions_t.c.document_id == documents_t.c.id)
             .where(doc_versions_t.c.superseded_by.is_(None))
+            .where(chunks_t.c.id.not_in(select(quarantine_t.c.chunk_id)))
         )
         if jurisdiction:
             q = q.where(chunks_t.c.jurisdiction == jurisdiction)
         with self.engine.connect() as conn:
             return [dict(r) for r in conn.execute(q.order_by(chunks_t.c.id)).mappings()]
+
+    def article_chunks(self, citation_id: str, jurisdictions: tuple[str, ...]) -> list[dict[str, Any]]:
+        """All live chunks (parts, languages) of one cited article, restricted to entitled jurisdictions."""
+        return [c for c in self.live_chunks() if c["citation_id"] == citation_id and c["jurisdiction"] in jurisdictions]
 
     def lineage(self, chunk_id: str) -> dict[str, Any] | None:
         q = (
@@ -273,6 +300,7 @@ class LineageStore:
                 chunks_t.c.chunk_path,
                 chunks_t.c.chunker_version,
                 chunks_t.c.license,
+                chunks_t.c.jurisdiction,
                 doc_versions_t.c.id.label("doc_version_id"),
                 doc_versions_t.c.content_sha256,
                 doc_versions_t.c.raw_uri,
@@ -306,11 +334,7 @@ class LineageStore:
             conn.execute(update(index_runs_t).where(index_runs_t.c.run_id == run_id).values(**values))
 
     def index_runs(self, jurisdiction: str) -> list[dict[str, Any]]:
-        q = (
-            select(index_runs_t)
-            .where(index_runs_t.c.jurisdiction == jurisdiction)
-            .order_by(index_runs_t.c.created_at)
-        )
+        q = select(index_runs_t).where(index_runs_t.c.jurisdiction == jurisdiction).order_by(index_runs_t.c.created_at)
         with self.engine.connect() as conn:
             return [dict(r) for r in conn.execute(q).mappings()]
 
@@ -323,5 +347,5 @@ class LineageStore:
         with self.engine.connect() as conn:
             return {
                 t.name: int(conn.execute(select(func.count()).select_from(t)).scalar_one())
-                for t in (sources_t, documents_t, doc_versions_t, chunks_t)
+                for t in (sources_t, documents_t, doc_versions_t, chunks_t, quarantine_t)
             }

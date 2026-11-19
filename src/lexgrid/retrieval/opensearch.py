@@ -217,8 +217,9 @@ def _date(v: str | None) -> date | None:
 class OpenSearchBackend:
     """Searches only entitled aliases: scope is enforced by index, and again by filter."""
 
-    def __init__(self, client: Any) -> None:
+    def __init__(self, client: Any, overrides: Mapping[str, str] | None = None) -> None:
         self.client = client
+        self.overrides = dict(overrides or {})  # jurisdiction -> physical index (gate evaluates candidates)
 
     @staticmethod
     def _filter(f: Filters) -> list[dict[str, Any]]:
@@ -255,9 +256,8 @@ class OpenSearchBackend:
             )
         return out
 
-    @staticmethod
-    def _targets(f: Filters) -> str:
-        return ",".join(alias_name(j) for j in f.jurisdictions)
+    def _targets(self, f: Filters) -> str:
+        return ",".join(self.overrides.get(j, alias_name(j)) for j in f.jurisdictions)
 
     @staticmethod
     def _hits(resp: Mapping[str, Any]) -> list[Hit]:

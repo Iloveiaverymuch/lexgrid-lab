@@ -62,9 +62,7 @@ class RetrievalService:
             vec = self.embedder.embed([query], "query")[0]
             t["embed_query"] = (time.perf_counter() - s) * 1000
             s = time.perf_counter()
-            semantic = self.backend.dense(
-                [float(x) for x in vec], self.vector_field, filters, self.candidates
-            )
+            semantic = self.backend.dense([float(x) for x in vec], self.vector_field, filters, self.candidates)
             t["dense"] = (time.perf_counter() - s) * 1000
 
         if mode == "bm25":

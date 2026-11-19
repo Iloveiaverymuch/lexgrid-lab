@@ -11,16 +11,12 @@ def _doc(paragraphs: list[str]) -> NormalizedDocument:
         title="t",
         language="en",
         doc_type="regulation",
-        articles=[
-            ArticleUnit(number="17", heading="Right to erasure", path=["CHAPTER III"], paragraphs=paragraphs)
-        ],
+        articles=[ArticleUnit(number="17", heading="Right to erasure", path=["CHAPTER III"], paragraphs=paragraphs)],
     )
 
 
 def test_article_number_is_in_every_chunk_text() -> None:
-    doc = PARSERS["eurlex_html"].parse(
-        (SAMPLES / "eurlex_en.html").read_bytes(), source=make_source(), language="en"
-    )
+    doc = PARSERS["eurlex_html"].parse((SAMPLES / "eurlex_en.html").read_bytes(), source=make_source(), language="en")
     chunks = chunk_document(doc, source=make_source(), doc_version_id="v1")
     assert chunks
     for c in chunks:
@@ -39,9 +35,7 @@ def test_short_article_is_one_chunk_with_stable_ids() -> None:
 
 def test_long_article_split_with_overlap_and_budget() -> None:
     sentences = [f"Sentence number {i} explains a rule about data erasure in detail." for i in range(120)]
-    chunks = chunk_document(
-        _doc([" ".join(sentences)]), source=make_source(), doc_version_id="v1", max_tokens=200
-    )
+    chunks = chunk_document(_doc([" ".join(sentences)]), source=make_source(), doc_version_id="v1", max_tokens=200)
     assert len(chunks) > 1
     assert all(c.n_parts == len(chunks) for c in chunks)
     assert all(c.token_count <= 200 + 30 for c in chunks)  # header + one overlap sentence of slack

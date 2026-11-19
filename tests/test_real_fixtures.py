@@ -31,9 +31,7 @@ def _docs(source_id: str) -> list[tuple[str, object]]:
     return [
         (
             f.language,
-            PARSERS[src.parser].parse(
-                (FIXTURES / source_id / f.path).read_bytes(), source=src, language=f.language
-            ),
+            PARSERS[src.parser].parse((FIXTURES / source_id / f.path).read_bytes(), source=src, language=f.language),
         )
         for f in m.files
     ]

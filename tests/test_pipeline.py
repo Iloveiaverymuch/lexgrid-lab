@@ -33,7 +33,7 @@ def test_dry_run_has_no_side_effects(setup: tuple[Path, LineageStore]) -> None:
     root, store = setup
     rep = ingest([make_source()], root, store, dry_run=True)[0]
     assert rep.chunks > 0
-    assert store.counts() == {"sources": 0, "documents": 0, "doc_versions": 0, "chunks": 0}
+    assert set(store.counts().values()) == {0}
 
 
 def test_changed_content_creates_new_version_and_tombstones_old(
@@ -44,9 +44,7 @@ def test_changed_content_creates_new_version_and_tombstones_old(
     live_before = {c["id"] for c in store.live_chunks()}
 
     changed = tmp_path / "changed.html"
-    changed.write_bytes(
-        (SAMPLES / "eurlex_en.html").read_bytes().replace(b"natural persons", b"natural people")
-    )
+    changed.write_bytes((SAMPLES / "eurlex_en.html").read_bytes().replace(b"natural persons", b"natural people"))
     pin_fixture(source=make_source(), fixtures_root=root, file=changed, language="en")
     rep = ingest([make_source()], root, store)[0]
     assert rep.new_versions == 1

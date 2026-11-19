@@ -67,17 +67,13 @@ def _git_sha() -> str:
         sha = subprocess.run(
             ["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, check=True
         ).stdout.strip()
-        dirty = subprocess.run(
-            ["git", "status", "--porcelain"], capture_output=True, text=True, check=True
-        ).stdout
+        dirty = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, check=True).stdout
         return f"{sha}-dirty" if dirty.strip() else sha  # results from uncommitted code are flagged
     except (OSError, subprocess.CalledProcessError):
         return "unknown"
 
 
-def run_mode(
-    service: RetrievalService, queries: Sequence[GoldenQuery], mode: Mode, k: int = 10
-) -> ModeResult:
+def run_mode(service: RetrievalService, queries: Sequence[GoldenQuery], mode: Mode, k: int = 10) -> ModeResult:
     pq: dict[str, dict[str, float]] = {}
     ranked: dict[str, list[str]] = {}
     top: dict[str, float] = {}
@@ -157,9 +153,7 @@ def write_results(
         "host": platform.platform(),
         "config": config,
         "summary": summary,
-        "per_query": {
-            r.mode: {"metrics": r.per_query, "ranked": r.ranked, "top_score": r.top_scores} for r in results
-        },
+        "per_query": {r.mode: {"metrics": r.per_query, "ranked": r.ranked, "top_score": r.top_scores} for r in results},
     }
     path = out_dir / f"{run_id}.json"
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False, default=str) + "\n", encoding="utf-8")

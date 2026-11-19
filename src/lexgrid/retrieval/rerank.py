@@ -27,15 +27,11 @@ class OverlapReranker:
 class CrossEncoderReranker:
     """Default BAAI/bge-reranker-v2-m3 (multilingual, Apache-2.0). Runs on Apple GPU (mps) when available."""
 
-    def __init__(
-        self, model_id: str = "BAAI/bge-reranker-v2-m3", name: str = "bge-m3", max_length: int = 512
-    ) -> None:
+    def __init__(self, model_id: str = "BAAI/bge-reranker-v2-m3", name: str = "bge-m3", max_length: int = 512) -> None:
         import torch  # lazy
         from sentence_transformers import CrossEncoder
 
-        device = (
-            "mps" if torch.backends.mps.is_available() else ("cuda" if torch.cuda.is_available() else "cpu")
-        )
+        device = "mps" if torch.backends.mps.is_available() else ("cuda" if torch.cuda.is_available() else "cpu")
         self.name = name
         self.model_id = model_id
         self._model = CrossEncoder(model_id, max_length=max_length, device=device)

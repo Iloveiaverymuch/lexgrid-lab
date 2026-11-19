@@ -216,3 +216,38 @@ queries:
     language: fr
     scope: [FR]
     type: no_answer
+  - id: q35
+    query: "obligations for providers of high-risk AI systems"
+    language: en
+    scope: [EU]
+    type: no_answer
+    note: "AI Act is not in the corpus"
+  - id: q36
+    query: "maximum roaming surcharge for mobile calls within the EU"
+    language: en
+    scope: [EU]
+    type: no_answer
+  - id: q37
+    query: "durée maximale de la période d'essai d'un CDI"
+    language: fr
+    scope: [FR]
+    type: no_answer
+    note: "Code du travail is not in the corpus"
+  - id: q38
+    query: "délai pour agir en garantie des vices cachés"
+    language: fr
+    scope: [FR]
+    type: no_answer
+    note: "Code civil art. 1648 is not in the corpus"
+  - id: q39
+    query: "Mehrwertsteuersatz für Lebensmittel"
+    language: de
+    scope: [DE]
+    type: no_answer
+    note: "UStG is not in the corpus"
+  - id: q40
+    query: "Grundfreibetrag Einkommensteuer"
+    language: de
+    scope: [DE]
+    type: no_answer
+    note: "EStG is not in the corpus"

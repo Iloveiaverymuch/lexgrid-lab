@@ -40,9 +40,7 @@ def cmd_fixtures_pin(args: argparse.Namespace) -> int:
     if source is None:
         print(f"unknown source {args.source}")
         return 2
-    entry = pin_fixture(
-        source=source, fixtures_root=FIXTURES, file=Path(args.file), language=args.lang, url=args.url
-    )
+    entry = pin_fixture(source=source, fixtures_root=FIXTURES, file=Path(args.file), language=args.lang, url=args.url)
     print(json.dumps(entry.model_dump(mode="json"), indent=2))
     return 0
 
@@ -152,10 +150,7 @@ def cmd_index_status(args: argparse.Namespace) -> int:
     store = _store(args)
     for j in JURISDICTIONS:
         for r in store.index_runs(j):
-            print(
-                f"{j} {r['status']:<11} {r['index_name']} "
-                f"chunks={r['n_chunks']} models={r['embedding_model']}"
-            )
+            print(f"{j} {r['status']:<11} {r['index_name']} chunks={r['n_chunks']} models={r['embedding_model']}")
     return 0
 
 
@@ -181,9 +176,7 @@ def cmd_eval(args: argparse.Namespace) -> int:
         from lexgrid.retrieval.memory import MemoryBackend
 
         chunks = _store(args).live_chunks()
-        backend = MemoryBackend(
-            chunks, {f"vec_{emb.name}": emb.embed([c["text"] for c in chunks], "passage")}
-        )
+        backend = MemoryBackend(chunks, {f"vec_{emb.name}": emb.embed([c["text"] for c in chunks], "passage")})
     else:
         from lexgrid.retrieval.opensearch import OpenSearchBackend, make_client
 
@@ -221,6 +214,94 @@ def cmd_eval(args: argparse.Namespace) -> int:
         with (ROOT / "evals" / "FINDINGS.md").open("a", encoding="utf-8") as fh:
             fh.write(row)
         print("FINDINGS row appended")
+    return 0
+
+
+# ---------------------------------------------------------------- Day 3: gate / abstention / serving
+def cmd_index_release(args: argparse.Namespace) -> int:
+    from lexgrid.evals.runner import load_golden
+    from lexgrid.gate import release
+    from lexgrid.retrieval.opensearch import make_client
+    from lexgrid.retrieval.rerank import build_reranker
+
+    embedders = [_embedder(m, args.aws_profile) for m in args.models.split(",")]
+    gate_emb = next((e for e in embedders if e.name == args.gate_embedder.replace("-", "")), None)
+    if gate_emb is None:
+        print(f"--gate-embedder {args.gate_embedder} must be one of --models")
+        return 2
+    reranker = build_reranker(args.reranker) if args.gate_mode == "hybrid_rrf_rerank" else None
+    decision, built = release(
+        client=make_client(args.opensearch),
+        store=_store(args),
+        jurisdictions=JURISDICTIONS,
+        embedders=embedders,
+        gate_embedder=gate_emb,
+        golden=load_golden(Path(args.golden)),
+        mode=args.gate_mode,
+        reranker=reranker,
+        tolerance=args.tolerance,
+        drop_fraction=args.drop_fraction,
+    )
+    print(json.dumps({"built": built, "promoted": decision.promote, "reason": decision.reason}, indent=2))
+    if decision.diff is not None:
+        print(f"paired diff {decision.diff:+.3f} [{decision.ci_low:+.3f}, {decision.ci_high:+.3f}]")
+    return 0 if decision.promote else 3
+
+
+def cmd_abstain_sweep(args: argparse.Namespace) -> int:
+    from lexgrid.evals.abstain import choose, sweep
+    from lexgrid.evals.runner import load_golden
+
+    run = json.loads(Path(args.results).read_text(encoding="utf-8"))
+    pq = run["per_query"][args.mode]
+    no_answer = {q.id for q in load_golden(Path(args.golden)) if q.type == "no_answer"}
+    missing = no_answer - set(pq["top_score"])
+    if missing:
+        print(f"results file lacks no-answer queries {sorted(missing)}: rerun the eval with the current golden set")
+        return 2
+    hit1 = {q: m["hit@1"] for q, m in pq["metrics"].items()}
+    thresholds = [round(x * 0.01, 2) for x in range(0, 61)]
+    rows = sweep(pq["top_score"], no_answer, hit1, thresholds)
+    print("| t | no-answer abstained | answerable answered | answered hit@1 |\n|---|---|---|---|")
+    for r in rows[::5]:
+        print(
+            f"| {r.threshold:.2f} | {r.no_answer_abstain:.2f} | {r.answerable_answered:.2f} | {r.answered_hit1:.2f} |"
+        )
+    best = choose(rows)
+    n_na, n_ans = len(no_answer), len(pq["top_score"]) - len(no_answer)
+    print(
+        f"chosen t={best.threshold:.2f}: abstains on {best.no_answer_abstain:.0%} of {n_na} no-answer, "
+        f"answers {best.answerable_answered:.0%} of {n_ans} answerable, hit@1 when answering {best.answered_hit1:.0%}"
+    )
+    return 0
+
+
+def cmd_serve(args: argparse.Namespace) -> int:
+    import uvicorn
+
+    from lexgrid.api import create_app
+    from lexgrid.runtime import Settings, build_runtime
+
+    settings = Settings.from_env()
+    if not settings.api_keys:
+        print("set LEXGRID_API_KEYS, e.g. 'dev-fr:FR;dev-all:EU,FR,DE'")
+        return 2
+    rt = build_runtime(settings)
+    uvicorn.run(create_app(rt.retrieval, rt.ask, rt.store, settings.api_keys), host=args.host, port=args.port)
+    return 0
+
+
+def cmd_mcp(args: argparse.Namespace) -> int:
+    from lexgrid.mcp_server import LegalTools, create_mcp
+    from lexgrid.runtime import Settings, build_runtime, entitlements
+
+    settings = Settings.from_env()
+    scope = entitlements(settings.api_keys, os.environ.get("LEXGRID_MCP_KEY"))
+    if scope is None:
+        print("set LEXGRID_MCP_KEY to a key listed in LEXGRID_API_KEYS", file=sys.stderr)
+        return 2
+    rt = build_runtime(settings)
+    create_mcp(LegalTools(rt.retrieval, rt.store, scope)).run("stdio")
     return 0
 
 
@@ -262,7 +343,7 @@ def main(argv: list[str] | None = None) -> int:
     ix = sub.add_parser("index").add_subparsers(dest="sub", required=True)
     b = ix.add_parser("build")
     b.add_argument("--jurisdiction", default="all", choices=["all", *JURISDICTIONS])
-    b.add_argument("--models", default="e5")
+    b.add_argument("--models", default="bge-m3,e5")
     b.add_argument("--promote", action="store_true")
     common(b)
     b.set_defaults(func=cmd_index_build)
@@ -279,9 +360,34 @@ def main(argv: list[str] | None = None) -> int:
     common(st)
     st.set_defaults(func=cmd_index_status)
 
+    rl = ix.add_parser("release", help="build candidates, gate on the golden set, promote all or reject")
+    rl.add_argument("--models", default="bge-m3,e5")
+    rl.add_argument("--gate-embedder", default="bge-m3")
+    rl.add_argument("--gate-mode", default="hybrid_rrf", choices=["bm25", "dense", "hybrid_rrf", "hybrid_rrf_rerank"])
+    rl.add_argument("--reranker", default="bge-m3", choices=["overlap", "bge-m3", "mminilm"])
+    rl.add_argument("--tolerance", type=float, default=0.02)
+    rl.add_argument("--drop-fraction", type=float, default=0.0, help="fault injection: build from a random subset")
+    rl.add_argument("--golden", default=str(ROOT / "evals" / "golden" / "golden_v1.yaml"))
+    common(rl)
+    rl.set_defaults(func=cmd_index_release)
+
+    sw = sub.add_parser("abstain-sweep", help="choose the /ask no-answer threshold from an eval results file")
+    sw.add_argument("--results", required=True)
+    sw.add_argument("--mode", default="hybrid_rrf_rerank")
+    sw.add_argument("--golden", default=str(ROOT / "evals" / "golden" / "golden_v1.yaml"))
+    sw.set_defaults(func=cmd_abstain_sweep)
+
+    sv = sub.add_parser("serve", help="REST API (/search, /ask, /lineage)")
+    sv.add_argument("--host", default="127.0.0.1")
+    sv.add_argument("--port", type=int, default=8000)
+    sv.set_defaults(func=cmd_serve)
+
+    mc = sub.add_parser("mcp", help="MCP server over stdio")
+    mc.set_defaults(func=cmd_mcp)
+
     ev = sub.add_parser("eval")
     ev.add_argument("--backend", default="opensearch", choices=["memory", "opensearch"])
-    ev.add_argument("--embedder", default="e5", choices=["hash", "e5", "bge-m3", "titan"])
+    ev.add_argument("--embedder", default="bge-m3", choices=["hash", "e5", "bge-m3", "titan"])
     ev.add_argument("--reranker", default="bge-m3", choices=["overlap", "bge-m3", "mminilm"])
     ev.add_argument("--modes", default="")
     ev.add_argument("--golden", default=str(ROOT / "evals" / "golden" / "golden_v1.yaml"))

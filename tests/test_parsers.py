@@ -14,9 +14,7 @@ def test_registry_has_one_parser_per_format() -> None:
 
 
 def test_eurlex_en_structure() -> None:
-    doc = PARSERS["eurlex_html"].parse(
-        (SAMPLES / "eurlex_en.html").read_bytes(), source=make_source(), language="en"
-    )
+    doc = PARSERS["eurlex_html"].parse((SAMPLES / "eurlex_en.html").read_bytes(), source=make_source(), language="en")
     assert [a.number for a in doc.articles] == ["1", "17"]
     art17 = doc.articles[1]
     assert art17.heading == "Right to erasure (‘right to be forgotten’)"
@@ -32,9 +30,7 @@ def test_eurlex_en_structure() -> None:
 
 
 def test_eurlex_fr_article_premier_legacy_classes() -> None:
-    doc = PARSERS["eurlex_html"].parse(
-        (SAMPLES / "eurlex_fr.html").read_bytes(), source=make_source(), language="fr"
-    )
+    doc = PARSERS["eurlex_html"].parse((SAMPLES / "eurlex_fr.html").read_bytes(), source=make_source(), language="fr")
     assert [a.number for a in doc.articles] == ["1", "17"]
     assert doc.articles[0].heading == "Objet et objectifs"
 
@@ -77,9 +73,7 @@ def test_legifrance_capture() -> None:
         parser="legifrance_html",
         default_valid_from=date(2016, 7, 1),
     )
-    doc = PARSERS["legifrance_html"].parse(
-        (SAMPLES / "legifrance_conso.html").read_bytes(), source=src, language="fr"
-    )
+    doc = PARSERS["legifrance_html"].parse((SAMPLES / "legifrance_conso.html").read_bytes(), source=src, language="fr")
     by_num = {a.number: a for a in doc.articles}
     assert set(by_num) == {"L221-18", "L221-19"}  # script content ignored, TOC duplicate merged
     a18 = by_num["L221-18"]
