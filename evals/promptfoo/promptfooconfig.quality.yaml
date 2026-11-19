@@ -1,0 +1,16 @@
+# Quality suite: the golden set as promptfoo tests (generated: quality.tests.yaml). Run on the Mac against the
+# real system (OpenSearch, bge-m3, reranker). Not expected to pass 100%: known weaknesses show up here.
+#   npx promptfoo@0.126.0 eval -c evals/promptfoo/promptfooconfig.quality.yaml --no-cache --no-share
+#   npx promptfoo@0.126.0 view
+description: lexgrid retrieval quality (golden set v1, hybrid + rerank)
+prompts: ["{{query}}"]
+providers:
+  - id: file://provider.py
+    label: lexgrid-api
+defaultTest:
+  vars:
+    endpoint: search
+    key: dev-all
+    mode: hybrid_rrf_rerank
+    k: 10
+tests: file://quality.tests.yaml

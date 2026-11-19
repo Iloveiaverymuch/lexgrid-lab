@@ -37,3 +37,5 @@ Scope from entitlements only; aliases + filter (R6). No document text in logs.
 | Exact references rank first on the real corpus | `test_offline_eval.py::test_exact_reference_queries_rank_first` |
 | Golden labels exist in the corpus | `test_offline_eval.py::test_golden_set_is_valid_and_labels_exist` |
 | Embedding cache only pays for misses | `test_retrieval.py::test_embedding_cache_only_pays_for_misses` |
+| promptfoo quality suite never drifts from the golden set | `test_offline_eval.py::test_promptfoo_quality_suite_matches_golden_set` |
+| API behaviour contract over HTTP (auth, scope, pinning, citations) | CI job `api-contract` (promptfoo, [ADR-003](../adr/ADR-003-evaluation-tooling-python-runner-and-promptfoo.md)) |

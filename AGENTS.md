@@ -30,6 +30,8 @@
 | Before/after comparison | `uv run lexgrid compare-runs --before evals/results/A.json --after evals/results/B.json` |
 | README screenshots (server running) | `uv run --with playwright python scripts/screenshots.py` |
 | CI retrieval gate (offline) | `uv run lexgrid eval --backend memory --embedder hash --reranker overlap --run-id CI-OFFLINE --out-dir /tmp/ci && uv run python scripts/eval_gate.py --results /tmp/ci/CI-OFFLINE.json` (`--update` to accept new numbers, review the diff) |
+| promptfoo API contract (server running offline: `LEXGRID_BACKEND=memory LEXGRID_EMBEDDER=hash LEXGRID_RERANKER=overlap`) | `PROMPTFOO_PYTHON=python3 LEXGRID_URL=http://127.0.0.1:8000 npx -y promptfoo@0.126.0 eval -c evals/promptfoo/promptfooconfig.contract.yaml --no-cache --no-share` |
+| promptfoo quality (real models, Mac) | `uv run python scripts/build_promptfoo.py` (after a golden-set change), then the same command with `promptfooconfig.quality.yaml` |
 | Retrieval eval | `uv run lexgrid eval --embedder e5 --reranker bge-m3 --warmup --run-id <ID> --record "<conclusion>"` |
 
 ## Session protocol

@@ -5,6 +5,7 @@ every exact-reference query finds its article at rank 1, and the golden set stay
 """
 
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -56,3 +57,11 @@ def test_fixtures_are_never_line_ending_normalized() -> None:
     except (OSError, subprocess.CalledProcessError):
         pytest.skip("not a git checkout")
     assert out.strip().endswith("unset"), out
+
+
+def test_promptfoo_quality_suite_matches_golden_set() -> None:
+    """The promptfoo quality tests are generated from the golden set; they must never drift from it."""
+    out = subprocess.run(
+        [sys.executable, str(REPO / "scripts" / "build_promptfoo.py"), "--check"], capture_output=True, text=True
+    )
+    assert out.returncode == 0, out.stdout + out.stderr

@@ -48,3 +48,43 @@ jobs:
         with:
           name: offline-eval
           path: ci-results/
+
+  api-contract:
+    name: API contract (promptfoo, offline server)
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      LEXGRID_DB: sqlite:///var/ci.db
+      LEXGRID_BACKEND: memory
+      LEXGRID_EMBEDDER: hash
+      LEXGRID_RERANKER: overlap
+      LEXGRID_API_KEYS: "dev-fr:FR;dev-all:EU,FR,DE"
+      LEXGRID_URL: http://127.0.0.1:8000
+      PROMPTFOO_PYTHON: python3
+      PROMPTFOO_DISABLE_TELEMETRY: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: uv sync --frozen
+      - name: Ingest pinned corpus
+        run: mkdir -p var && uv run lexgrid ingest | tail -1
+      - name: Start API (in-memory backend, offline models)
+        run: |
+          nohup uv run lexgrid serve --port 8000 > serve.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf "$LEXGRID_URL/health" && break; sleep 2; done
+          curl -sf "$LEXGRID_URL/health"
+      - name: promptfoo contract suite
+        run: npx -y promptfoo@0.126.0 eval -c evals/promptfoo/promptfooconfig.contract.yaml --no-cache --no-share -o promptfoo-contract.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: promptfoo-contract
+          path: |
+            promptfoo-contract.json
+            serve.log
