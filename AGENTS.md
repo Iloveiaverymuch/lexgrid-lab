@@ -25,7 +25,7 @@
 | Build + promote indexes | `uv run lexgrid index build --models e5,titan --promote` · `index status` · `index rollback --jurisdiction FR` |
 | Gated release (build → eval vs live → promote or reject) | `uv run lexgrid index release --models bge-m3,e5` (`--drop-fraction 0.3` = fault injection demo) |
 | Abstention threshold | `uv run lexgrid abstain-sweep --results evals/results/<run>.json` |
-| REST API | `LEXGRID_API_KEYS="dev-fr:FR;dev-all:EU,FR,DE" uv run lexgrid serve` |
+| REST API + demo console | `LEXGRID_API_KEYS="dev-fr:FR;dev-all:EU,FR,DE" uv run lexgrid serve` → http://127.0.0.1:8000/ |
 | MCP (stdio) | `LEXGRID_API_KEYS=... LEXGRID_MCP_KEY=dev-fr uv run lexgrid mcp` |
 | Retrieval eval | `uv run lexgrid eval --embedder e5 --reranker bge-m3 --warmup --run-id <ID> --record "<conclusion>"` |
 

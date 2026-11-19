@@ -1,5 +1,6 @@
 """REST + MCP contract and the jurisdiction-isolation (leak) test on the real corpus."""
 
+import re
 from pathlib import Path
 from typing import Any
 
@@ -101,3 +102,29 @@ def test_mcp_tools_contract_and_scope(retrieval: RetrievalService, real_store: L
     de = real_store.live_chunks("DE")[0]
     assert tools.get_article(de["citation_id"]) == {"found": False, "citation_id": de["citation_id"]}
     assert tools.get_lineage(de["id"]) == {"found": False}
+
+
+def test_ui_and_console_endpoints(retrieval: RetrievalService, real_store: LineageStore, tmp_path: Path) -> None:
+    (tmp_path / "RUN-1.json").write_text(
+        '{"run_id": "RUN-1", "created_at": "2026-11-19", "git_sha": "abc", "config": {}, "summary": {"modes": {}},'
+        ' "per_query": {"bm25": {}}}'
+    )
+    (tmp_path / "broken.json").write_text("{not json")
+    ask = AskService(retrieval, ExtractiveAnswerer(), abstain_threshold=0.15)
+    c = TestClient(create_app(retrieval, ask, real_store, KEYS, results_dir=tmp_path))
+    page = c.get("/")
+    assert page.status_code == 200 and "lexgrid" in page.text
+    assert not re.search(
+        r"\.(innerHTML|outerHTML)\s*=|insertAdjacentHTML", page.text
+    )  # untrusted text only via textContent
+    assert c.get("/whoami", headers=FR).json()["scope"] == ["FR"]
+    assert c.get("/whoami").status_code == 401
+    assert set(c.get("/indexes", headers=FR).json()) == {"FR"}  # other jurisdictions' index history not exposed
+    runs = c.get("/evals", headers=FR).json()
+    assert [r["run_id"] for r in runs] == ["RUN-1"] and "per_query" not in runs[0]
+
+
+def test_named_article_is_flagged_as_pinned(client: TestClient) -> None:
+    hits = client.post("/search", json={"query": "article L. 221-18", "k": 3}, headers=FR).json()["hits"]
+    assert hits[0]["article_key"].endswith("L221-18") and hits[0]["pinned"] is True
+    assert not any(h["pinned"] for h in hits[1:])

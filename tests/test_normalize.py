@@ -41,3 +41,12 @@ def test_split_sentences_keeps_numbers() -> None:
         "Le délai est de 14 jours.",
         "Il court dès la conclusion.",
     ]
+
+
+def test_split_sentences_keeps_legal_abbreviations_together() -> None:
+    text = "Le délai court selon l'article L. 221-4 dont l'exécution a commencé. Le montant est proportionné."
+    assert split_sentences(text) == [
+        "Le délai court selon l'article L. 221-4 dont l'exécution a commencé.",
+        "Le montant est proportionné.",
+    ]
+    assert len(split_sentences("Nach § 3 Abs. 2 gilt die Frist. Sie beginnt sofort.")) == 2

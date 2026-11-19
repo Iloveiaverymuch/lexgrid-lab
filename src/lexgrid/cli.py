@@ -287,7 +287,9 @@ def cmd_serve(args: argparse.Namespace) -> int:
         print("set LEXGRID_API_KEYS, e.g. 'dev-fr:FR;dev-all:EU,FR,DE'")
         return 2
     rt = build_runtime(settings)
-    uvicorn.run(create_app(rt.retrieval, rt.ask, rt.store, settings.api_keys), host=args.host, port=args.port)
+    app = create_app(rt.retrieval, rt.ask, rt.store, settings.api_keys, results_dir=ROOT / "evals" / "results")
+    print(f"UI: http://{args.host}:{args.port}/")
+    uvicorn.run(app, host=args.host, port=args.port)
     return 0
 
 

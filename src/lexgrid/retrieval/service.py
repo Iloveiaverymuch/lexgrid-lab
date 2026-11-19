@@ -19,8 +19,9 @@ class SearchResult:
 
 def pin_refs(ranked: list[Hit], refs: set[str]) -> list[Hit]:
     """Explicitly referenced articles first (stable: keeps their relative order), then the rest."""
-    pinned = [h for h in ranked if h.article_number.lower() in {r.lower() for r in refs}]
-    return pinned + [h for h in ranked if h not in pinned]
+    wanted = {r.lower() for r in refs}
+    pinned = [h.with_score(h.score, pinned=1.0) for h in ranked if h.article_number.lower() in wanted]
+    return pinned + [h for h in ranked if h.article_number.lower() not in wanted]
 
 
 class RetrievalService:

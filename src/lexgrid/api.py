@@ -3,11 +3,13 @@
 Run: `LEXGRID_API_KEYS="dev-fr:FR;dev-all:EU,FR,DE" uv run lexgrid serve`
 """
 
-
+import json
 from datetime import date
+from pathlib import Path
 from typing import Annotated, Any
 
 from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from lexgrid.answer import AskService
@@ -40,6 +42,7 @@ def hit_json(h: Hit) -> dict[str, Any]:
         "language": h.language,
         "path": h.chunk_path,
         "score": round(h.score, 6),
+        "pinned": bool(h.debug.get("pinned")),
         "valid_from": h.valid_from.isoformat() if h.valid_from else None,
         "valid_to": h.valid_to.isoformat() if h.valid_to else None,
         "text": h.text,
@@ -57,8 +60,27 @@ def resolve_scope(requested: list[str] | None, entitled: tuple[str, ...]) -> tup
     return req
 
 
+STATIC = Path(__file__).parent / "static"
+
+
+def eval_summaries(results_dir: Path) -> list[dict[str, Any]]:
+    """Run summaries (no per-query detail) for the evaluation view, newest first."""
+    runs = []
+    for f in sorted(results_dir.glob("*.json")):
+        try:
+            d = json.loads(f.read_text(encoding="utf-8"))
+            runs.append({k: d.get(k) for k in ("run_id", "created_at", "git_sha", "config", "summary")})
+        except (json.JSONDecodeError, OSError):
+            continue
+    return sorted(runs, key=lambda r: str(r.get("created_at")), reverse=True)
+
+
 def create_app(
-    retrieval: RetrievalService, ask: AskService, store: LineageStore, keys: dict[str, tuple[str, ...]]
+    retrieval: RetrievalService,
+    ask: AskService,
+    store: LineageStore,
+    keys: dict[str, tuple[str, ...]],
+    results_dir: Path | None = None,
 ) -> FastAPI:
     app = FastAPI(title="lexgrid-lab", version="0.3.0", description="Legal retrieval lab. Not legal advice.")
 
@@ -70,9 +92,39 @@ def create_app(
 
     Scope = Annotated[tuple[str, ...], Depends(scope_of)]
 
+    @app.get("/", include_in_schema=False)
+    def ui() -> FileResponse:
+        return FileResponse(STATIC / "index.html", media_type="text/html")
+
     @app.get("/health")
     def health() -> dict[str, str]:
         return {"status": "ok"}
+
+    @app.get("/whoami")
+    def whoami(entitled: Scope) -> dict[str, Any]:
+        return {"scope": list(entitled), "abstain_threshold": ask.threshold, "ask_mode": ask.mode}
+
+    @app.get("/indexes")
+    def indexes(entitled: Scope) -> dict[str, Any]:
+        out: dict[str, Any] = {}
+        for j in entitled:
+            out[j] = [
+                {
+                    "index": r["index_name"],
+                    "status": r["status"],
+                    "chunks": r["n_chunks"],
+                    "models": r["embedding_model"],
+                    "eval_run_id": r["eval_run_id"],
+                    "created_at": r["created_at"].isoformat() if r["created_at"] else None,
+                    "promoted_at": r["promoted_at"].isoformat() if r["promoted_at"] else None,
+                }
+                for r in store.index_runs(j)
+            ]
+        return out
+
+    @app.get("/evals")
+    def evals(entitled: Scope) -> list[dict[str, Any]]:
+        return eval_summaries(results_dir) if results_dir else []
 
     @app.post("/search")
     def search(req: SearchRequest, entitled: Scope) -> dict[str, Any]:

@@ -48,6 +48,18 @@ def estimate_tokens(text: str) -> int:
 _SENTENCE_END = re.compile(r"(?<=[.;:!?])\s+(?=[A-ZÀ-ÖØ-Þ(\d])")
 
 
+# "article L. 221-4", "art. 9", "§ 3 Abs. 2", "n° 2016-301": a period here does not end a sentence.
+_ABBREV_END = re.compile(r"(\b[A-Z]|\b(?:art|Art|al|n°|No|no|p|cf|Abs|Nr|S|Bd|vgl))\.$")
+
+
 def split_sentences(text: str) -> list[str]:
     parts = [p.strip() for p in _SENTENCE_END.split(text)]
-    return [p for p in parts if p]
+    merged: list[str] = []
+    for p in parts:
+        if not p:
+            continue
+        if merged and _ABBREV_END.search(merged[-1]):
+            merged[-1] = f"{merged[-1]} {p}"
+        else:
+            merged.append(p)
+    return merged

@@ -17,6 +17,7 @@ promotion gate, measured retrieval quality, and a cited-answer API/MCP with per-
 | Embedding choice (bge-m3 vs multilingual-e5; Bedrock Titan blocked) | [ADR-001](docs/adr/ADR-001-open-source-embeddings-and-reranker.md) |
 | Own pipeline vs Bedrock Knowledge Bases | [ADR-002](docs/adr/ADR-002-own-pipeline-vs-bedrock-knowledge-bases.md) |
 | Per-country isolation (leak rate 0), prompt-injection quarantine | [`tests/test_api_mcp.py`](tests/test_api_mcp.py), [`tests/test_screen.py`](tests/test_screen.py) |
+| Demo console (search, compare rankings, cited answers, lineage, index history, metrics) | `lexgrid serve` → http://127.0.0.1:8000/ ([`static/index.html`](src/lexgrid/static/index.html)) |
 | Retrieval as a product: same contract over REST and MCP | [`src/lexgrid/api.py`](src/lexgrid/api.py), [`src/lexgrid/mcp_server.py`](src/lexgrid/mcp_server.py) |
 
 ## Results (golden set v1: 30 answerable + 10 no-answer queries, labels drafted by the agent, human review pending)
@@ -60,7 +61,7 @@ uv run lexgrid ingest
 uv run lexgrid embed --model bge-m3 && uv run lexgrid embed --model e5
 uv run lexgrid index release --models bge-m3,e5            # build → gate → promote (or reject)
 uv run lexgrid eval --embedder bge-m3 --warmup --run-id MY-RUN
-LEXGRID_API_KEYS="dev-fr:FR;dev-all:EU,FR,DE" uv run lexgrid serve
+LEXGRID_API_KEYS="dev-fr:FR;dev-all:EU,FR,DE" uv run lexgrid serve   # console at http://127.0.0.1:8000/
 ```
 All commands: [AGENTS.md](AGENTS.md). Demo script: [docs/DEMO_15MIN.md](docs/DEMO_15MIN.md).
 

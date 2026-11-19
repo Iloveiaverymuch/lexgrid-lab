@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>lexgrid · legal retrieval lab</title>
+<style>
+:root {
+  --paper: #f3f5f4;
+  --sheet: #fbfcfb;
+  --ink: #1e2533;
+  --muted: #5f6878;
+  --rule: #d3d9d6;
+  --eu: #2b4c9b;
+  --fr: #8a2d3b;
+  --de: #2f6a4e;
+  --warn: #9a5b06;
+  --serif: "Iowan Old Style", "Charter", "Source Serif 4", "Georgia", serif;
+  --sans: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", sans-serif;
+  --margin: 9.5rem;
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); color: var(--ink); }
+body { margin: 0; font: 15px/1.5 var(--sans); font-variant-numeric: tabular-nums; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--eu); outline-offset: 2px; }
+a { color: var(--eu); }
+
+/* Masthead: the running head of a code */
+.masthead { display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: end; padding: 1.25rem 2rem 0.75rem; border-bottom: 2px solid var(--ink); background: var(--sheet); }
+.wordmark { font: 600 1.6rem/1 var(--serif); letter-spacing: 0.01em; margin: 0; }
+.wordmark small { display: block; font: 400 0.85rem/1.4 var(--sans); color: var(--muted); margin-top: 0.3rem; letter-spacing: 0; }
+.keybox { margin-left: auto; display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.keybox label { color: var(--muted); font-size: 0.85rem; }
+.keybox input { width: 9rem; padding: 0.35rem 0.5rem; border: 1px solid var(--rule); background: #fff; border-radius: 3px; }
+.scope { display: flex; gap: 0.35rem; align-items: center; font-size: 0.85rem; color: var(--muted); }
+
+nav.tabs { display: flex; gap: 0; padding: 0 2rem; background: var(--sheet); border-bottom: 1px solid var(--rule); }
+nav.tabs button { border: 0; background: none; padding: 0.7rem 1rem 0.6rem; cursor: pointer; color: var(--muted); border-bottom: 3px solid transparent; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); font-weight: 600; }
+
+main { max-width: 74rem; margin: 0 auto; padding: 1.5rem 2rem 4rem; }
+section[hidden] { display: none; }
+
+/* Jurisdiction marks: colour carries meaning, nothing else is coloured */
+.j { display: inline-block; min-width: 2.2rem; text-align: center; padding: 0.05rem 0.4rem; border-radius: 2px; color: #fff; font-size: 0.78rem; font-weight: 600; }
+.j.EU { background: var(--eu); } .j.FR { background: var(--fr); } .j.DE { background: var(--de); }
+.cite { font-weight: 600; } .cite.EU { color: var(--eu); } .cite.FR { color: var(--fr); } .cite.DE { color: var(--de); }
+
+/* Query bar */
+.query { display: flex; gap: 0.75rem; align-items: stretch; }
+.query input, .query textarea { flex: 1; font: 1.35rem/1.35 var(--serif); padding: 0.65rem 0.8rem; border: 1px solid var(--ink); background: #fff; border-radius: 3px; resize: vertical; }
+.btn { border: 1px solid var(--ink); background: var(--ink); color: #fff; padding: 0.55rem 1.1rem; border-radius: 3px; cursor: pointer; font-weight: 600; }
+.btn:disabled { opacity: 0.5; cursor: progress; }
+.btn.quiet { background: none; color: var(--ink); border-color: var(--rule); font-weight: 400; padding: 0.3rem 0.7rem; }
+.controls { display: flex; flex-wrap: wrap; gap: 0.75rem 1.75rem; margin: 0.9rem 0 0.4rem; align-items: center; font-size: 0.9rem; }
+.controls .group { display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap; }
+.controls .label { color: var(--muted); margin-right: 0.25rem; }
+.toggle { border: 1px solid var(--rule); background: #fff; padding: 0.2rem 0.6rem; border-radius: 3px; cursor: pointer; }
+.toggle[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: #fff; }
+.toggle.jur:not(.locked)[aria-pressed="true"].EU { background: var(--eu); border-color: var(--eu); }
+.toggle.jur:not(.locked)[aria-pressed="true"].FR { background: var(--fr); border-color: var(--fr); }
+.toggle.jur:not(.locked)[aria-pressed="true"].DE { background: var(--de); border-color: var(--de); }
+.toggle.locked { border-style: dashed; color: var(--muted); }
+.toggle.locked[aria-pressed="true"] { background: #fff; color: var(--ink); border-color: var(--ink); }
+.controls input[type="date"] { border: 1px solid var(--rule); padding: 0.15rem 0.4rem; border-radius: 3px; background: #fff; }
+.presets { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: baseline; font-size: 0.88rem; margin-bottom: 1.25rem; }
+.presets .label { color: var(--muted); }
+.preset { border: 0; background: none; padding: 0; color: var(--eu); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.preset + .preset::before { content: ""; margin-right: 0.6rem; border-left: 1px solid var(--rule); }
+
+.status { min-height: 1.4rem; color: var(--muted); font-size: 0.88rem; margin-bottom: 0.5rem; }
+.notice { border-left: 4px solid var(--warn); background: #fff7ea; padding: 0.75rem 1rem; margin: 0.5rem 0 1rem; }
+.notice strong { display: block; }
+
+/* Results: statute layout, citation in the margin */
+.hits { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+.hit { display: grid; grid-template-columns: var(--margin) 1fr; gap: 0 1.5rem; padding: 1rem 0; border-bottom: 1px solid var(--rule); }
+.hit .margin { text-align: right; font-size: 0.82rem; color: var(--muted); }
+.hit .rank { font: 600 1.25rem/1 var(--serif); color: var(--ink); display: block; margin-bottom: 0.3rem; }
+.mcite { display: block; line-height: 1.3; }
+.mcite .act { display: block; font-weight: 600; }
+.mcite .art { display: block; font: 600 1.02rem/1.3 var(--serif); color: var(--ink); }
+.mcite .date { display: block; color: var(--muted); font-size: 0.78rem; }
+.pin { display: inline-block; margin-top: 0.35rem; font-size: 0.75rem; color: var(--ink); border: 1px solid var(--ink); padding: 0 0.3rem; border-radius: 2px; }
+.scorebar { height: 4px; background: var(--rule); margin: 0.35rem 0 0.25rem auto; width: 6rem; }
+.scorebar span { display: block; height: 100%; background: var(--ink); }
+.hit .path { font-size: 0.8rem; color: var(--muted); margin: 0 0 0.2rem; }
+.hit h3 { font: 600 1.08rem/1.35 var(--serif); margin: 0 0 0.35rem; }
+.hit .body { font: 1rem/1.62 var(--serif); margin: 0; max-width: 70ch; white-space: pre-line; }
+.hit .body.clamped { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.hit .actions { display: flex; gap: 0.5rem; margin-top: 0.6rem; }
+.timings { font-size: 0.82rem; color: var(--muted); margin-top: 0.75rem; }
+
+/* Compare: four rankings side by side, the same article lit across columns */
+.compare { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 1.25rem; border-top: 2px solid var(--ink); }
+.compare h3 { font: 600 1rem/1.3 var(--serif); margin: 0.7rem 0 0.1rem; }
+.compare .ms { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.4rem; }
+.compare ol { list-style: none; margin: 0; padding: 0; }
+.compare li { display: grid; grid-template-columns: 1.6rem 1fr; gap: 0.4rem; padding: 0.35rem 0.3rem; border-bottom: 1px solid var(--rule); cursor: default; font-size: 0.88rem; line-height: 1.3; }
+.compare li .n { color: var(--muted); text-align: right; }
+.compare li .t { display: block; color: var(--muted); font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.compare li.rel { box-shadow: inset 3px 0 0 var(--ink); }
+.compare.linking li { opacity: 0.35; }
+.compare.linking li.lit { opacity: 1; background: #fff; }
+.legend { font-size: 0.82rem; color: var(--muted); margin-top: 0.75rem; }
+
+/* Ask */
+.answer { border-top: 2px solid var(--ink); margin-top: 0.5rem; }
+.answer blockquote { display: grid; grid-template-columns: var(--margin) 1fr; gap: 0 1.5rem; margin: 0; padding: 0.9rem 0; border-bottom: 1px solid var(--rule); }
+.answer blockquote .margin { text-align: right; font-size: 0.82rem; }
+.answer blockquote p { margin: 0; font: 1.05rem/1.6 var(--serif); max-width: 70ch; }
+.sources { font-size: 0.85rem; color: var(--muted); margin-top: 1rem; }
+.sources ul { margin: 0.25rem 0 0; padding-left: 1.1rem; }
+.disclaimer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--rule); margin-top: 1.25rem; padding-top: 0.6rem; max-width: 70ch; }
+
+/* Indexes */
+.jblock { margin-bottom: 2rem; }
+.jblock h2 { font: 600 1.15rem/1.3 var(--serif); margin: 0 0 0.4rem; display: flex; gap: 0.6rem; align-items: center; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th { text-align: left; font-weight: 600; color: var(--muted); border-bottom: 1px solid var(--ink); padding: 0.35rem 0.6rem 0.35rem 0; }
+td { border-bottom: 1px solid var(--rule); padding: 0.45rem 0.6rem 0.45rem 0; vertical-align: top; }
+td.num, th.num { text-align: right; }
+.st { font-weight: 600; }
+.st.promoted { color: var(--de); } .st.rejected { color: var(--fr); } .st.retired, .st.built { color: var(--muted); } .st.rolled_back { color: var(--warn); }
+.mono { font-family: var(--sans); font-size: 0.82rem; overflow-wrap: anywhere; }
+
+/* Evaluation */
+.evalhead { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; align-items: center; margin-bottom: 1rem; }
+.evalhead select { padding: 0.3rem 0.5rem; border: 1px solid var(--rule); border-radius: 3px; background: #fff; }
+.evalhead .cfg { color: var(--muted); font-size: 0.85rem; }
+.ci svg { display: block; }
+.note { font-size: 0.82rem; color: var(--muted); margin-top: 0.75rem; max-width: 80ch; }
+h2.sub { font: 600 1.05rem/1.3 var(--serif); margin: 1.75rem 0 0.5rem; }
+
+/* Lineage drawer */
+.drawer { position: fixed; inset: 0 0 0 auto; width: min(32rem, 100vw); background: var(--sheet); border-left: 2px solid var(--ink); padding: 1.25rem 1.5rem; overflow-y: auto; transform: translateX(100%); transition: transform 180ms ease-out; z-index: 10; }
+.drawer.open { transform: none; }
+.drawer h2 { font: 600 1.2rem/1.3 var(--serif); margin: 0 0 0.25rem; }
+.drawer .close { position: absolute; top: 1rem; right: 1rem; }
+.chain { list-style: none; margin: 1rem 0 0; padding: 0; }
+.chain li { position: relative; padding: 0 0 1.1rem 1.6rem; }
+.chain li::before { content: ""; position: absolute; left: 0.32rem; top: 0.45rem; width: 0.55rem; height: 0.55rem; border: 2px solid var(--ink); border-radius: 50%; background: var(--sheet); }
+.chain li:not(:last-child)::after { content: ""; position: absolute; left: 0.62rem; top: 1.15rem; bottom: 0; border-left: 2px solid var(--rule); }
+.chain .step { font-weight: 600; }
+.chain dl { margin: 0.2rem 0 0; display: grid; grid-template-columns: 7.5rem 1fr; gap: 0.15rem 0.6rem; font-size: 0.84rem; }
+.chain dt { color: var(--muted); }
+.chain dd { margin: 0; overflow-wrap: anywhere; }
+
+.empty { color: var(--muted); padding: 2rem 0; max-width: 60ch; }
+
+@media (max-width: 860px) {
+  :root { --margin: 4.5rem; }
+  .masthead, nav.tabs, main { padding-left: 1rem; padding-right: 1rem; }
+  .compare { grid-template-columns: 1fr 1fr; }
+  .query { flex-direction: column; }
+}
+@media (max-width: 520px) { .compare { grid-template-columns: 1fr; } .hit, .answer blockquote { grid-template-columns: 1fr; } .hit .margin, .answer blockquote .margin { text-align: left; } .scorebar { margin-left: 0; } }
+@media (prefers-reduced-motion: reduce) { .drawer { transition: none; } }
+</style>
+</head>
+<body>
+<header class="masthead">
+  <h1 class="wordmark">lexgrid<small>Search across EU, French and German consumer and data-protection law. Lab, not legal advice.</small></h1>
+  <form class="keybox" id="keyform" autocomplete="off">
+    <label for="key">API key</label>
+    <input id="key" name="key" type="password" placeholder="e.g. dev-fr" list="knownkeys">
+    <datalist id="knownkeys"></datalist>
+    <button class="btn quiet" type="submit">Connect</button>
+    <div class="scope" id="scope" aria-live="polite">Not connected</div>
+  </form>
+</header>
+<nav class="tabs" role="tablist" aria-label="Views">
+  <button role="tab" aria-selected="true" data-view="search">Search</button>
+  <button role="tab" aria-selected="false" data-view="ask">Ask</button>
+  <button role="tab" aria-selected="false" data-view="indexes">Indexes</button>
+  <button role="tab" aria-selected="false" data-view="evaluation">Evaluation</button>
+</nav>
+
+<main>
+  <section id="view-search" role="tabpanel">
+    <form class="query" id="searchform">
+      <input id="q" type="search" placeholder="délai de rétractation contrat à distance" aria-label="Search query" required>
+      <button class="btn" type="submit" id="searchbtn">Search</button>
+    </form>
+    <div class="controls">
+      <div class="group" id="jurgroup"><span class="label">Jurisdictions</span></div>
+      <div class="group" id="modegroup" role="group" aria-label="Ranking">
+        <span class="label">Ranking</span>
+        <button type="button" class="toggle" data-mode="bm25" aria-pressed="false">Keywords</button>
+        <button type="button" class="toggle" data-mode="dense" aria-pressed="false">Meaning</button>
+        <button type="button" class="toggle" data-mode="hybrid_rrf" aria-pressed="true">Hybrid</button>
+        <button type="button" class="toggle" data-mode="hybrid_rrf_rerank" aria-pressed="false">Hybrid + rerank</button>
+        <button type="button" class="toggle" data-mode="compare" aria-pressed="false">Compare all four</button>
+      </div>
+      <div class="group"><label class="label" for="asof">In force on</label><input id="asof" type="date"></div>
+    </div>
+    <div class="presets" id="searchpresets"><span class="label">Try</span></div>
+    <div class="status" id="searchstatus" aria-live="polite"></div>
+    <div id="searchout"><p class="empty">Connect with an API key, then search. The key decides which jurisdictions you can see.</p></div>
+  </section>
+
+  <section id="view-ask" role="tabpanel" hidden>
+    <form class="query" id="askform">
+      <textarea id="question" rows="2" placeholder="combien de jours pour se rétracter après un achat en ligne ?" aria-label="Question" required></textarea>
+      <button class="btn" type="submit" id="askbtn">Ask</button>
+    </form>
+    <div class="presets" id="askpresets" style="margin-top:0.8rem"><span class="label">Try</span></div>
+    <div class="status" id="askstatus" aria-live="polite"></div>
+    <div id="askout"></div>
+  </section>
+
+  <section id="view-indexes" role="tabpanel" hidden>
+    <p class="note" style="margin-top:0">Each build is a new index. A release is evaluated on the golden set against the live index and promoted only if it does not regress; rejected builds never receive traffic. Rollback moves the alias back.</p>
+    <div id="indexout"></div>
+  </section>
+
+  <section id="view-evaluation" role="tabpanel" hidden>
+    <div class="evalhead"><label for="runsel" class="label">Evaluation run</label><select id="runsel"></select><span class="cfg" id="runcfg"></span></div>
+    <div id="evalout"></div>
+  </section>
+</main>
+
+<aside class="drawer" id="drawer" aria-hidden="true" aria-labelledby="drawertitle">
+  <button class="btn quiet close" type="button" id="drawerclose">Close</button>
+  <h2 id="drawertitle">Where this text comes from</h2>
+  <div id="drawerbody"></div>
+</aside>
+
+<script>
+"use strict";
+const JURS = ["EU", "FR", "DE"];
+const MODE_NAMES = { bm25: "Keywords (BM25)", dense: "Meaning (dense)", hybrid_rrf: "Hybrid (RRF)", hybrid_rrf_rerank: "Hybrid + rerank" };
+const SEARCH_PRESETS = [
+  ["Article number", "article L. 221-18 code de la consommation", ["FR"]],
+  ["French question, German law", "délai de remboursement après rétractation en droit allemand", ["DE"]],
+  ["Three countries", "exceptions to the right of withdrawal for personalised goods", ["EU", "FR", "DE"]],
+  ["Outside your scope", "Widerrufsfrist 14 Tage", ["DE"]],
+];
+const ASK_PRESETS = [
+  ["Withdrawal period", "combien de jours pour se rétracter après un achat en ligne ?"],
+  ["Data breach", "within how many hours must a controller notify a personal data breach?"],
+  ["Not in the corpus", "durée maximale de la période d'essai d'un CDI"],
+];
+const state = { key: "", scope: [], jur: new Set(), mode: "hybrid_rrf", runs: [] };
+
+/* DOM helper: all content goes through textContent, never innerHTML (retrieved text is untrusted). */
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === "class") el.className = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const kid of kids.flat()) if (kid !== null && kid !== undefined) el.append(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+  return el;
+}
+const $ = (id) => document.getElementById(id);
+const store = {
+  get(k) { try { return sessionStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { sessionStorage.setItem(k, v); } catch { /* storage unavailable: keep in memory */ } },
+};
+
+async function api(path, body) {
+  const res = await fetch(path, {
+    method: body ? "POST" : "GET",
+    headers: { "Content-Type": "application/json", "X-API-Key": state.key },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  let data = null;
+  try { data = await res.json(); } catch { /* empty body */ }
+  if (!res.ok) {
+    const detail = data && data.detail ? (typeof data.detail === "string" ? data.detail : JSON.stringify(data.detail)) : res.statusText;
+    const err = new Error(detail); err.status = res.status; throw err;
+  }
+  return data;
+}
+
+function jmark(j) { return h("span", { class: `j ${j}` }, j); }
+function splitChunk(text) {
+  const nl = text.indexOf("\n");
+  const head = nl < 0 ? text : text.slice(0, nl);
+  const body = nl < 0 ? "" : text.slice(nl + 1);
+  const parts = head.split(" > ");
+  return { title: parts[parts.length - 1], path: parts.slice(0, -1).join(" › "), body };
+}
+/* "FR:C. conso:L221-18" + valid_from -> act / article / date, set on separate lines in the margin */
+function citeBlock(j, act, num, date) {
+  const art = j === "DE" ? `§ ${num}` : `art. ${num}`;
+  return h("span", { class: `mcite cite ${j}` }, h("span", { class: "act" }, act), h("span", { class: "art" }, art),
+    date ? h("span", { class: "date" }, `in force ${date}`) : null);
+}
+function citeFromHit(hit) {
+  const [j, act, num] = hit.article_key.split(":");
+  return citeBlock(j, act, num, hit.valid_from);
+}
+function citeFromId(id) {
+  const m = id.match(/^\[(EU|FR|DE):(.+?) (?:art\.|§) (\S+)(?: @(\S+))?\]$/);
+  return m ? citeBlock(m[1], m[2], m[3], m[4]) : h("span", { class: "cite" }, id);
+}
+function shortPath(path) {
+  const parts = path.split(" › ").slice(1);
+  return parts.slice(-2).join(" › ");
+}
+function ms(v) { return v === undefined ? "" : `${Math.round(v)} ms`; }
+function errorNotice(err, what) {
+  if (err.status === 401) return h("div", { class: "notice", role: "alert" }, h("strong", {}, "Key not recognised"), "Enter a key from LEXGRID_API_KEYS and press Connect.");
+  if (err.status === 403) return h("div", { class: "notice", role: "alert" }, h("strong", {}, "Refused by the server"), `${err.message}. The key decides the scope; a request can narrow it but never widen it.`);
+  return h("div", { class: "notice", role: "alert" }, h("strong", {}, `${what} failed`), err.message);
+}
+
+/* ---------- connection ---------- */
+async function connect(key) {
+  state.key = key.trim();
+  try {
+    const who = await api("/whoami");
+    state.scope = who.scope;
+    state.threshold = who.abstain_threshold;
+    state.jur = new Set(who.scope);
+    store.set("lexgrid.key", state.key);
+    const known = new Set(JSON.parse(store.get("lexgrid.known") || "[]")); known.add(state.key);
+    store.set("lexgrid.known", JSON.stringify([...known]));
+    renderKnown();
+    $("scope").replaceChildren("Can search", ...who.scope.map(jmark));
+    renderJurToggles();
+    $("searchout").replaceChildren(h("p", { class: "empty" }, "Search above, or pick one of the examples."));
+    loadIndexes(); loadEvals();
+  } catch (err) {
+    state.scope = []; state.jur = new Set();
+    $("scope").replaceChildren(err.status === 401 ? "Key not recognised" : `Cannot reach the API (${err.message})`);
+    renderJurToggles();
+  }
+}
+function renderKnown() {
+  const known = JSON.parse(store.get("lexgrid.known") || "[]");
+  $("knownkeys").replaceChildren(...known.map((k) => h("option", { value: k })));
+}
+$("keyform").addEventListener("submit", (e) => { e.preventDefault(); connect($("key").value); });
+
+/* ---------- search ---------- */
+function renderJurToggles() {
+  const g = $("jurgroup");
+  g.replaceChildren(h("span", { class: "label" }, "Jurisdictions"));
+  for (const j of JURS) {
+    const entitled = state.scope.includes(j);
+    g.append(h("button", {
+      type: "button", class: `toggle jur ${j}${entitled ? "" : " locked"}`, "aria-pressed": String(state.jur.has(j)),
+      title: entitled ? `Include ${j}` : `${j} is outside this key's scope: selecting it shows what the server does`,
+      onclick: (e) => { state.jur.has(j) ? state.jur.delete(j) : state.jur.add(j); e.currentTarget.setAttribute("aria-pressed", String(state.jur.has(j))); },
+    }, entitled ? j : `${j} (locked)`));
+  }
+}
+for (const b of $("modegroup").querySelectorAll("button")) {
+  b.addEventListener("click", () => {
+    state.mode = b.dataset.mode;
+    for (const o of $("modegroup").querySelectorAll("button")) o.setAttribute("aria-pressed", String(o === b));
+  });
+}
+for (const [label, q, jurs] of SEARCH_PRESETS) {
+  $("searchpresets").append(h("button", { type: "button", class: "preset", onclick: () => {
+    $("q").value = q; state.jur = new Set(jurs); renderJurToggles(); runSearch();
+  } }, label));
+}
+$("searchform").addEventListener("submit", (e) => { e.preventDefault(); runSearch(); });
+
+function searchBody(mode, k) {
+  const body = { query: $("q").value.trim(), mode, k, jurisdictions: [...state.jur] };
+  if ($("asof").value) body.as_of = $("asof").value;
+  return body;
+}
+async function runSearch() {
+  if (!state.key) { $("searchstatus").textContent = "Connect with an API key first."; return; }
+  if (!$("q").value.trim()) return;
+  if (!state.jur.size) { $("searchstatus").textContent = "Select at least one jurisdiction."; return; }
+  $("searchbtn").disabled = true; $("searchstatus").textContent = state.mode === "compare" ? "Ranking four ways…" : "Searching…";
+  try {
+    if (state.mode === "compare") {
+      const modes = Object.keys(MODE_NAMES);
+      const results = await Promise.all(modes.map((m) => api("/search", searchBody(m, 10))));
+      renderCompare(modes, results);
+      $("searchstatus").textContent = `Scope: ${results[0].scope.join(", ")}`;
+    } else {
+      const res = await api("/search", searchBody(state.mode, 8));
+      renderHits(res);
+      $("searchstatus").textContent = `${res.hits.length} articles, ${MODE_NAMES[res.mode]}, scope ${res.scope.join(", ")}`;
+    }
+  } catch (err) {
+    $("searchout").replaceChildren(errorNotice(err, "Search")); $("searchstatus").textContent = "";
+  } finally { $("searchbtn").disabled = false; }
+}
+function renderHits(res) {
+  if (!res.hits.length) { $("searchout").replaceChildren(h("p", { class: "empty" }, "No article in your scope matches. Try other words, another language, or a wider date.")); return; }
+  const max = Math.max(...res.hits.map((x) => x.score)) || 1;
+  const list = h("ol", { class: "hits" });
+  res.hits.forEach((hit, i) => {
+    const c = splitChunk(hit.text);
+    const body = h("p", { class: "body clamped" }, c.body);
+    const more = h("button", { type: "button", class: "btn quiet", "aria-expanded": "false", onclick: (e) => {
+      const open = body.classList.toggle("clamped") === false; e.currentTarget.setAttribute("aria-expanded", String(open));
+      e.currentTarget.textContent = open ? "Show less" : "Show full text";
+    } }, "Show full text");
+    list.append(h("li", { class: "hit" },
+      h("div", { class: "margin", title: hit.citation_id },
+        h("span", { class: "rank" }, i + 1),
+        citeFromHit(hit),
+        hit.pinned ? h("span", { class: "pin", title: "Your query names this article, so it is placed first" }, "you named it") : null,
+        h("div", { class: "scorebar", title: `score ${hit.score}` }, h("span", { style: `width:${Math.max(4, (hit.score / max) * 100)}%` })),
+        `score ${hit.score.toPrecision(3)}, ${hit.language.toUpperCase()}`),
+      h("div", {},
+        h("p", { class: "path", title: c.path }, shortPath(c.path)),
+        h("h3", {}, c.title),
+        body,
+        h("div", { class: "actions" }, more, h("button", { type: "button", class: "btn quiet", onclick: () => openLineage(hit) }, "Trace source")))));
+  });
+  const t = Object.entries(res.timings_ms || {}).map(([k, v]) => `${k.replace("_", " ")} ${ms(v)}`).join(", ");
+  $("searchout").replaceChildren(list, h("p", { class: "timings" }, `Timings: ${t}`));
+}
+function renderCompare(modes, results) {
+  const grid = h("div", { class: "compare" });
+  const link = (key, on) => {
+    grid.classList.toggle("linking", on);
+    for (const li of grid.querySelectorAll("li")) li.classList.toggle("lit", on && li.dataset.key === key);
+  };
+  modes.forEach((m, idx) => {
+    const res = results[idx];
+    const ol = h("ol", {});
+    res.hits.forEach((hit, i) => {
+      const c = splitChunk(hit.text);
+      ol.append(h("li", { "data-key": hit.article_key, tabindex: "0",
+        onmouseenter: () => link(hit.article_key, true), onmouseleave: () => link(null, false),
+        onfocus: () => link(hit.article_key, true), onblur: () => link(null, false) },
+        h("span", { class: "n" }, i + 1),
+        h("span", {}, h("span", { class: `cite ${hit.jurisdiction}` }, hit.article_key.replace(/^(EU|FR|DE):/, "")),
+          h("span", { class: "t", title: c.path }, c.path.split(" › ").slice(-1)[0] || c.title))));
+    });
+    grid.append(h("div", {}, h("h3", {}, MODE_NAMES[m]), h("div", { class: "ms" }, `total ${ms(res.timings_ms.total)}`), ol));
+  });
+  $("searchout").replaceChildren(grid, h("p", { class: "legend" }, "Point at an article to light it up in every column and see how each ranking places it. Keywords win on article numbers; meaning wins across languages; the reranker reorders the hybrid list."));
+}
+
+/* ---------- lineage drawer ---------- */
+async function openLineage(hit) {
+  const d = $("drawer");
+  $("drawerbody").replaceChildren(h("p", { class: "status" }, "Tracing…"));
+  d.classList.add("open"); d.setAttribute("aria-hidden", "false"); $("drawerclose").focus();
+  try {
+    const l = await api(`/lineage/${encodeURIComponent(hit.chunk_id)}`);
+    const step = (name, rows) => h("li", {}, h("div", { class: "step" }, name),
+      h("dl", {}, ...rows.filter(([, v]) => v !== null && v !== undefined && v !== "").flatMap(([k, v]) => [h("dt", {}, k), h("dd", {}, v)])));
+    const src = l.source_url ? h("a", { href: l.source_url, target: "_blank", rel: "noopener noreferrer" }, l.source_url) : "";
+    $("drawerbody").replaceChildren(
+      h("p", {}, h("span", { class: `cite ${l.jurisdiction}` }, l.citation_id)),
+      h("ol", { class: "chain" },
+        step("Search result", [["Chunk", l.chunk_id], ["Section", l.chunk_path]]),
+        step("Chunk", [["Chunker", l.chunker_version], ["Licence", l.license]]),
+        step("Document version", [["Version", l.doc_version_id], ["Parser", `${l.parser_name} ${l.parser_version}`], ["Superseded by", l.superseded_by || "live"]]),
+        step("Raw capture", [["File", l.raw_uri], ["SHA-256", l.content_sha256], ["Fetched", (l.fetched_at || "").slice(0, 16).replace("T", " ") + " UTC"]]),
+        step("Published source", [["Document", l.external_id], ["Language", (l.language || "").toUpperCase()], ["URL", src]])));
+  } catch (err) { $("drawerbody").replaceChildren(errorNotice(err, "Trace")); }
+}
+function closeDrawer() { const d = $("drawer"); d.classList.remove("open"); d.setAttribute("aria-hidden", "true"); }
+$("drawerclose").addEventListener("click", closeDrawer);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDrawer(); });
+
+/* ---------- ask ---------- */
+for (const [label, q] of ASK_PRESETS) $("askpresets").append(h("button", { type: "button", class: "preset", onclick: () => { $("question").value = q; runAsk(); } }, label));
+$("askform").addEventListener("submit", (e) => { e.preventDefault(); runAsk(); });
+async function runAsk() {
+  if (!state.key) { $("askstatus").textContent = "Connect with an API key first."; return; }
+  const q = $("question").value.trim(); if (!q) return;
+  $("askbtn").disabled = true; $("askstatus").textContent = "Retrieving and reranking sources…";
+  try {
+    const r = await api("/ask", { question: q });
+    $("askstatus").textContent = "";
+    const out = [];
+    if (r.abstained) {
+      out.push(h("div", { class: "notice", role: "status" }, h("strong", {}, "Not answered: the sources found do not support an answer"),
+        `${r.reason}. Saying so is better than citing the wrong article.`));
+    } else {
+      const ans = h("div", { class: "answer" });
+      for (const line of r.answer) {
+        ans.append(h("blockquote", {}, h("div", { class: "margin", title: line.citation_id }, citeFromId(line.citation_id)), h("p", {}, line.text)));
+      }
+      out.push(ans, h("div", { class: "sources" }, `Quoted from ${r.sources.length} retrieved articles (extractive, no language model; top reranker score ${r.top_score?.toFixed(3)}, threshold ${state.threshold})`,
+        h("ul", {}, ...r.sources.map((s) => h("li", {}, h("span", { class: `cite ${s.jurisdiction}` }, s.citation_id))))));
+    }
+    out.push(h("p", { class: "disclaimer" }, r.disclaimer));
+    $("askout").replaceChildren(...out);
+  } catch (err) { $("askout").replaceChildren(errorNotice(err, "Ask")); $("askstatus").textContent = ""; }
+  finally { $("askbtn").disabled = false; }
+}
+
+/* ---------- indexes ---------- */
+async function loadIndexes() {
+  try {
+    const data = await api("/indexes");
+    const blocks = Object.entries(data).map(([j, runs]) => {
+      const rows = [...runs].reverse().map((r) => h("tr", {},
+        h("td", {}, h("span", { class: `st ${r.status}` }, r.status.replace("_", " "))),
+        h("td", { class: "mono" }, r.index),
+        h("td", { class: "num" }, r.chunks.toLocaleString("en")),
+        h("td", {}, (r.created_at || "").slice(0, 16).replace("T", " ")),
+        h("td", { class: "mono" }, r.eval_run_id || "manual")));
+      return h("div", { class: "jblock" }, h("h2", {}, jmark(j), `alias legal-${j.toLowerCase()}-current`),
+        rows.length ? h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "Status"), h("th", {}, "Index"), h("th", { class: "num" }, "Chunks"), h("th", {}, "Built (UTC)"), h("th", {}, "Gate run"))), h("tbody", {}, ...rows))
+          : h("p", { class: "empty" }, "No index built yet: run lexgrid index release."));
+    });
+    $("indexout").replaceChildren(...blocks);
+  } catch (err) { $("indexout").replaceChildren(errorNotice(err, "Loading indexes")); }
+}
+
+/* ---------- evaluation ---------- */
+async function loadEvals() {
+  try {
+    state.runs = await api("/evals");
+    const sel = $("runsel");
+    sel.replaceChildren(...state.runs.map((r, i) => h("option", { value: String(i) }, `${r.run_id} (${(r.config?.embedder || "").split("/").pop()})`)));
+    const best = state.runs.findIndex((r) => Object.keys(r.summary?.modes || {}).length > 1);
+    sel.value = String(best >= 0 ? best : 0);
+    renderEval();
+  } catch (err) { $("evalout").replaceChildren(errorNotice(err, "Loading evaluations")); }
+}
+$("runsel").addEventListener("change", renderEval);
+function ciBar(m) {
+  const W = 180, H = 18, x = (v) => 4 + v * (W - 8);
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("width", W); svg.setAttribute("height", H); svg.setAttribute("role", "img");
+  svg.setAttribute("aria-label", `${m.mean.toFixed(3)}, 95% interval ${m.ci_low.toFixed(2)} to ${m.ci_high.toFixed(2)}`);
+  const add = (tag, a) => { const e = document.createElementNS("http://www.w3.org/2000/svg", tag); for (const [k, v] of Object.entries(a)) e.setAttribute(k, v); svg.append(e); };
+  add("line", { x1: x(0), x2: x(1), y1: H / 2, y2: H / 2, stroke: "#d3d9d6", "stroke-width": 1 });
+  add("line", { x1: x(m.ci_low), x2: x(m.ci_high), y1: H / 2, y2: H / 2, stroke: "#1e2533", "stroke-width": 3 });
+  add("circle", { cx: x(m.mean), cy: H / 2, r: 4.5, fill: "#fbfcfb", stroke: "#1e2533", "stroke-width": 2 });
+  return svg;
+}
+function renderEval() {
+  const run = state.runs[Number($("runsel").value)];
+  if (!run) { $("evalout").replaceChildren(h("p", { class: "empty" }, "No evaluation results yet: run lexgrid eval.")); return; }
+  const s = run.summary, cfg = run.config || {};
+  $("runcfg").textContent = `${cfg.backend}, embedder ${cfg.embedder}, reranker ${cfg.reranker || "none"}, code ${run.git_sha}, ${s.n_queries} answerable + ${s.n_no_answer} no-answer queries`;
+  const f = (v) => v.mean.toFixed(3);
+  const rows = Object.entries(s.modes).map(([mode, d]) => h("tr", {},
+    h("td", {}, MODE_NAMES[mode] || mode),
+    h("td", { class: "ci" }, ciBar(d.metrics["ndcg@10"])),
+    h("td", { class: "num" }, f(d.metrics["ndcg@10"])),
+    h("td", { class: "num" }, f(d.metrics["mrr@10"])),
+    h("td", { class: "num" }, f(d.metrics["recall@10"])),
+    h("td", { class: "num" }, f(d.metrics["hit@5"])),
+    h("td", { class: "num" }, `${Math.round(d.latency_ms.p50)} / ${Math.round(d.latency_ms.p95)} ms`)));
+  const main = h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "Ranking"), h("th", {}, "nDCG@10 with 95% interval"), h("th", { class: "num" }, "nDCG@10"), h("th", { class: "num" }, "MRR"), h("th", { class: "num" }, "Recall@10"), h("th", { class: "num" }, "Hit@5"), h("th", { class: "num" }, "p50 / p95"))), h("tbody", {}, ...rows));
+  const types = [...new Set(Object.values(s.modes).flatMap((d) => Object.keys(d.by_type)))];
+  const typeNames = { exact_ref: "Article number", paraphrase: "Paraphrase", cross_lingual: "Other language", multi_jurisdiction: "Several countries" };
+  const byType = h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "Ranking"), ...types.map((t) => h("th", { class: "num" }, `${typeNames[t] || t} (n=${Object.values(s.modes)[0].by_type[t]?.n})`)))),
+    h("tbody", {}, ...Object.entries(s.modes).map(([mode, d]) => h("tr", {}, h("td", {}, MODE_NAMES[mode] || mode), ...types.map((t) => h("td", { class: "num" }, d.by_type[t] ? d.by_type[t]["ndcg@10"].toFixed(2) : ""))))));
+  const comps = Object.entries(s.comparisons || {}).map(([name, c]) => {
+    const pb = c["ndcg@10_paired_bootstrap"];
+    const [a] = name.split("_vs_");
+    return h("li", {}, `${MODE_NAMES[a] || a} vs keywords: nDCG@10 ${pb.diff >= 0 ? "+" : ""}${pb.diff.toFixed(3)} (95% interval ${pb.ci_low.toFixed(2)} to ${pb.ci_high.toFixed(2)})`);
+  });
+  $("evalout").replaceChildren(main,
+    h("h2", { class: "sub" }, "nDCG@10 by kind of question"), byType,
+    comps.length ? h("h2", { class: "sub" }, "Paired against keyword search") : "", comps.length ? h("ul", { class: "note" }, ...comps) : "",
+    h("p", { class: "note" }, `Labels were drafted for the lab and are pending human review; with ${s.n_queries} questions the intervals are wide and per-kind figures are indicative only.`));
+}
+
+/* ---------- tabs ---------- */
+for (const tab of document.querySelectorAll("nav.tabs button")) {
+  tab.addEventListener("click", () => {
+    for (const t of document.querySelectorAll("nav.tabs button")) t.setAttribute("aria-selected", String(t === tab));
+    for (const v of ["search", "ask", "indexes", "evaluation"]) $(`view-${v}`).hidden = v !== tab.dataset.view;
+  });
+}
+
+renderKnown(); renderJurToggles();
+const saved = store.get("lexgrid.key");
+if (saved) { $("key").value = saved; connect(saved); }
+</script>
+</body>
+</html>
